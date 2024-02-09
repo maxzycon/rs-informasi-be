@@ -63,7 +63,7 @@ type LoginRes struct {
 	Email       string  `json:"email"`
 	Phone       string  `json:"phone"`
 	Photo       *string `json:"photo"`
-	AccessToken string  `json:"accessToken"`
+	AccessToken string  `json:"access_token"`
 	Role        uint    `json:"role"`
 	Exp         int64   `json:"exp"`
 }
