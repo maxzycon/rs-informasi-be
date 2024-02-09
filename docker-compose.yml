@@ -1,0 +1,9 @@
+version: "3"
+
+services:
+  backend:
+    build: .
+    image: go-rs-farmasi-be
+    restart: unless-stopped
+    ports:
+      - "8084:8082"
