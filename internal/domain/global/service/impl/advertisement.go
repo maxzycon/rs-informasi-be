@@ -190,6 +190,99 @@ func (s *GlobalService) GetAdvertisementPaginated(ctx context.Context, payload *
 	return
 }
 
+func (s *GlobalService) GetListContent(ctx context.Context, merchantIDstr string) (resp *dto.AdvertisementContentWrapper, err error) {
+	resp = &dto.AdvertisementContentWrapper{
+		Daily:    make([]*dto.AdvertisementListData, 0),
+		Contents: make([]*dto.AdvertisementListData, 0),
+	}
+
+	// ----- Daily content
+	cond := squirrel.And{
+		squirrel.Eq{
+			"a.deleted_at": nil,
+		},
+		squirrel.Eq{
+			"m.id_str": merchantIDstr,
+		},
+		squirrel.GtOrEq{
+			"CAST(NOW() AS DATE)": "a.date_start",
+		},
+		squirrel.LtOrEq{
+			"CAST(NOW() AS DATE)": "a.date_start",
+		},
+	}
+
+	dailyContent, args, err := squirrel.
+		Select("a.id, a.document_path").
+		From("advertisements as a").
+		InnerJoin("merchants m ON m.id = a.merchant_id").
+		Where(cond).
+		ToSql()
+	if err != nil {
+		return
+	}
+
+	row, err := s.db.WithContext(ctx).Raw(dailyContent, args...).Rows()
+
+	if err != nil {
+		return
+	}
+
+	for row.Next() {
+		temp := dto.AdvertisementListData{}
+		err = row.Scan(
+			&temp.ID, &temp.URL,
+		)
+
+		if err != nil {
+			return
+		}
+		temp.URL = s.conf.AWS_S3_URL + "/" + temp.URL
+		resp.Daily = append(resp.Daily, &temp)
+	}
+	// ------ End daily
+
+	// ----- All content
+	content, args, err := squirrel.
+		Select("a.id, a.document_path").
+		From("advertisements as a").
+		InnerJoin("merchants m ON m.id = a.merchant_id").
+		Where(squirrel.And{
+			squirrel.Eq{
+				"a.deleted_at": nil,
+			},
+			squirrel.Eq{
+				"m.id_str": merchantIDstr,
+			},
+		}).
+		ToSql()
+	if err != nil {
+		return
+	}
+
+	row, err = s.db.WithContext(ctx).Raw(content, args...).Rows()
+
+	if err != nil {
+		return
+	}
+
+	for row.Next() {
+		temp := dto.AdvertisementListData{}
+		err = row.Scan(
+			&temp.ID, &temp.URL,
+		)
+
+		if err != nil {
+			return
+		}
+		temp.URL = s.conf.AWS_S3_URL + "/" + temp.URL
+		resp.Contents = append(resp.Daily, &temp)
+	}
+	// ----- End content
+
+	return
+}
+
 func (s *GlobalService) GetAdvertisementPluck(ctx context.Context) (resp []*dto.DefaultPluck, err error) {
 	rows, err := s.globalRepository.FindAllAdvertisement(ctx)
 	if err != nil {

@@ -60,3 +60,13 @@ type ParamsPaginationAdvertisement struct {
 	Page     uint64  `query:"page"`
 	Category uint64  `query:"category"`
 }
+
+type AdvertisementContentWrapper struct {
+	Daily    []*AdvertisementListData `json:"daily_content"`
+	Contents []*AdvertisementListData `json:"content"`
+}
+
+type AdvertisementListData struct {
+	ID  uint   `json:"id"`
+	URL string `json:"url"`
+}
