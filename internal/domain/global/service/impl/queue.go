@@ -85,8 +85,8 @@ func (s *GlobalService) GetQueuePaginated(ctx context.Context, payload *dto.Para
 	getStr, argStr, err := squirrel.Select(`q.id, q.id_str, q.queue_no, q.medical_record, q.location_id, q.location_name, q.type, q.merchant_id, q.merchant_name, q.user_id, q.user_name, l.status as lastStatus, COALESCE(lastExtend.end_queue, process.end_queue) as endTime, q.created_at`).
 		From("queues as q").
 		LeftJoin("(SELECT queue_id, status FROM queue_histories as c WHERE id = (SELECT MAX(qh.id) FROM queue_histories as qh WHERE qh.queue_id = c.queue_id))  as l ON l.queue_id = q.id").
-		LeftJoin("(SELECT * FROM queue_histories as c WHERE id = (SELECT MAX(qh.id) FROM queue_histories as qh WHERE qh.queue_id = c.queue_id)) as process ON process.queue_id = q.id AND process.status = 2").
-		LeftJoin("(SELECT * FROM queue_histories as c WHERE id = (SELECT MAX(qh.id) FROM queue_histories as qh WHERE qh.queue_id = c.queue_id)) as lastExtend ON lastExtend.queue_id = q.id AND lastExtend.status = 2 AND lastExtend.type = 2").
+		LeftJoin("(SELECT * FROM queue_histories as c WHERE id = (SELECT MAX(qh.id) FROM queue_histories as qh WHERE qh.queue_id = c.queue_id AND qh.status = 2)) as process ON process.queue_id = q.id").
+		LeftJoin("(SELECT * FROM queue_histories as c WHERE id = (SELECT MAX(qh.id) FROM queue_histories as qh WHERE qh.queue_id = c.queue_id AND qh.status = 2 AND qh.type = 2)) as lastExtend ON lastExtend.queue_id = q.id").
 		Where(cond).
 		Limit(payload.Limit).
 		Offset(payload.Limit * payload.Page).
@@ -120,8 +120,8 @@ func (s *GlobalService) GetQueuePaginated(ctx context.Context, payload *dto.Para
 	// ----- Count Pagination
 	getStrCount, argStrCount, err := squirrel.Select(`COUNT(q.id) as id`).
 		LeftJoin("(SELECT queue_id, status FROM queue_histories as c WHERE id = (SELECT MAX(qh.id) FROM queue_histories as qh WHERE qh.queue_id = c.queue_id)) as l ON l.queue_id = q.id").
-		LeftJoin("(SELECT * FROM queue_histories as c WHERE id = (SELECT MAX(qh.id) FROM queue_histories as qh WHERE qh.queue_id = c.queue_id)) as process ON process.queue_id = q.id AND process.status = 2").
-		LeftJoin("(SELECT * FROM queue_histories as c WHERE id = (SELECT MAX(qh.id) FROM queue_histories as qh WHERE qh.queue_id = c.queue_id)) as lastExtend ON lastExtend.queue_id = q.id AND lastExtend.status = 2 AND lastExtend.type = 2").
+		LeftJoin("(SELECT * FROM queue_histories as c WHERE id = (SELECT MAX(qh.id) FROM queue_histories as qh WHERE qh.queue_id = c.queue_id AND qh.status = 2)) as process ON process.queue_id = q.id").
+		LeftJoin("(SELECT * FROM queue_histories as c WHERE id = (SELECT MAX(qh.id) FROM queue_histories as qh WHERE qh.queue_id = c.queue_id AND qh.status = 2 AND qh.type = 2)) as lastExtend ON lastExtend.queue_id = q.id").
 		From("queues q").
 		Where(cond).
 		ToSql()
