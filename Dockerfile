@@ -1,10 +1,5 @@
 FROM golang:1.20-bullseye as build
 
-RUN apt-get update -y
-RUN apt-get install -y pkg-config \
-     libvips-tools \
-     libvips-dev
-
 WORKDIR /app
 
 COPY go.mod /app/
@@ -27,10 +22,6 @@ WORKDIR /app
 EXPOSE 8082
 
 RUN apt-get update -y
-RUN apt-get install -y pkg-config \
-     libvips-tools \
-     libvips-dev
-
 ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ=Asia/Jakarta
 RUN apt-get install -y tzdata
