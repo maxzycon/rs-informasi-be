@@ -41,6 +41,8 @@ const (
 	Queue             = "queues"
 	QueueById         = "queues/:id"
 	QueueStatusById   = "queues/status/:id"
+
+	AnalyticDashboard = "analytic/dashboard"
 )
 
 type GlobalControllerParams struct {
@@ -115,4 +117,7 @@ func (pc *GlobalController) Init() {
 	pc.v1.Post(Queue, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN, role.ROLE_KASIR}), pc.handlerCreateQueue)
 	pc.v1.Put(QueueStatusById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN, role.ROLE_KASIR, role.ROLE_FARMASI}), pc.handlerUpdateStatusQueue)
 	pc.v1.Delete(QueueById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN, role.ROLE_KASIR, role.ROLE_FARMASI}), pc.handlerDeleteQueue)
+
+	// ----- Analytic
+	pc.v1.Get(AnalyticDashboard, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_FARMASI, role.ROLE_KASIR, role.ROLE_MARKETING, role.ROLE_MULTIMEDIA, role.ROLE_SUPER_ADMIN}), pc.handlerGetDashboardAnalytic)
 }

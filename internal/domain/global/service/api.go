@@ -58,4 +58,7 @@ type GlobalService interface {
 	CreateQueue(ctx context.Context, payload *dto.PayloadQueue) (resp *int64, err error)
 	UpdateStatusQueueById(ctx context.Context, id int, payload *dto.PayloadUpdateQueue) (resp *int64, err error)
 	DeleteQueueById(ctx context.Context, id int) (resp *int64, err error)
+
+	// ----- Analytic
+	GetDashboardAnalytic(ctx context.Context) (resp *dto.SummaryDashboardWrapper, err error)
 }
