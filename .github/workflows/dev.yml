@@ -46,11 +46,11 @@ jobs:
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_SERVER_DEV }}
-          username: ${{ env.SSH_USERNAME_DEV }}
+          username: ${{ secrets.SSH_USERNAME_DEV }}
           password: ${{ secrets.SSH_PASSWORD_DEV }}
-          port: ${{ env.SSH_PORT_DEV }}
+          port: ${{ secrets.SSH_PORT_DEV }}
           script: |
-            cd ${{ env.FOLDER_DEV_PATH }} 
+            cd ${{ secrets.FOLDER_DEV_PATH }} 
             docker compose -f docker-compose.dev.yml stop
             docker compose -f docker-compose.dev.yml rm -f
             docker rmi ${{ secrets.DOCKER_HUB_USERNAME }}/go-rs:be-dev-latest
