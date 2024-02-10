@@ -25,6 +25,8 @@ type QueueRowPaginated struct {
 	CreatedByID   uint       `json:"created_by_id"`
 	CreatedBy     string     `json:"created_by"`
 	Status        uint       `json:"last_status"`
+	IsFollowUp    bool       `json:"is_follow_up"`
+	FollowUpPhone *string    `json:"follow_up_number"`
 	EstEnd        *time.Time `json:"est_end"`
 	CreatedAt     time.Time  `json:"created_at"`
 }
@@ -70,4 +72,40 @@ type ParamsQueueQueries struct {
 	Status      []uint `query:"status"`
 	Type        []uint `query:"type"`
 	LocationIDS []uint `query:"locations"`
+}
+
+type ParamsQueueDisplay struct {
+	Search        *string `query:"search"`
+	Limit         uint64  `query:"limit"`
+	Page          uint64  `query:"page"`
+	MerchantIdStr string  `query:"merchant_id_str"`
+}
+
+type QueueDataDisplayWrapper struct {
+	Queues    []*QueueDataDisplay     `json:"queues"`
+	Paginator DefaultPaginationDtoRow `json:"paginator"`
+}
+
+type QueueDataDisplay struct {
+	ID            uint   `json:"id"`
+	MedicalRecord string `json:"medical_record"`
+	QueueNo       string `json:"queue_no"`
+	Type          uint   `json:"type"`
+	Status        uint   `json:"status"`
+	EstEnd        string `json:"est_end"`
+}
+
+type QueueUserSearch struct {
+	ID            string  `json:"id_str"`
+	MedicalRecord string  `json:"medical_record"`
+	QueueNo       string  `json:"queue_no"`
+	Type          uint    `json:"type"`
+	Status        uint    `json:"status"`
+	EstEnd        string  `json:"est_end"`
+	IsFollowUp    bool    `json:"is_follow_up"`
+	FollowUpPhone *string `json:"last_follow_up_number"`
+}
+
+type PayloadUpdateFollowUpQueue struct {
+	NewFollowUpPhoneNo string `json:"new_follow_up_no"`
 }

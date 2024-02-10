@@ -52,6 +52,7 @@ type GlobalService interface {
 	CreateAdvertisement(ctx context.Context, payload *dto.PayloadAdvertisement) (resp *int64, err error)
 	UpdateAdvertisementById(ctx context.Context, id int, payload *dto.PayloadAdvertisement) (resp *int64, err error)
 	DeleteAdvertisementById(ctx context.Context, id int) (resp *int64, err error)
+	GetListContent(ctx context.Context, merchantIDstr string) (resp *dto.AdvertisementContentWrapper, err error)
 
 	// ----- Queues
 	GetQueuePaginated(ctx context.Context, payload *dto.ParamsQueueQueries) (resp dto.QueueWrapper, err error)
@@ -61,4 +62,13 @@ type GlobalService interface {
 
 	// ----- Analytic
 	GetDashboardAnalytic(ctx context.Context) (resp *dto.SummaryDashboardWrapper, err error)
+
+	// ----- Dashboard queue
+	GetDashboardDisplay(ctx context.Context, payload *dto.ParamsQueueDisplay, merchantIdStr string) (resp *dto.QueueDataDisplayWrapper, err error)
+
+	// ----- Get Queue detail by search
+	GetQueueBySearch(ctx context.Context, merchantId string, search string) (resp *dto.QueueUserSearch, err error)
+
+	// ----- Update queue
+	UpdateFuQueueNo(ctx context.Context, id string, newPhone string) (err error)
 }

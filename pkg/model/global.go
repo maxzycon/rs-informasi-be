@@ -82,6 +82,9 @@ type Queue struct {
 	User     User
 	UserName string
 
+	IsFollowUp    bool `gorm:"not null;default:0"`
+	FollowUpPhone *string
+
 	Histories []QueueHistory
 }
 

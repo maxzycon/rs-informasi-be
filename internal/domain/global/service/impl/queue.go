@@ -2,6 +2,7 @@ package impl
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"time"
 
@@ -82,7 +83,7 @@ func (s *GlobalService) GetQueuePaginated(ctx context.Context, payload *dto.Para
 		})
 	}
 
-	getStr, argStr, err := squirrel.Select(`q.id, q.id_str, q.queue_no, q.medical_record, q.location_id, q.location_name, q.type, q.merchant_id, q.merchant_name, q.user_id, q.user_name, l.status as lastStatus, COALESCE(lastExtend.end_queue, process.end_queue) as endTime, q.created_at`).
+	getStr, argStr, err := squirrel.Select(`q.id, q.id_str, q.queue_no, q.medical_record, q.location_id, q.location_name, q.type, q.merchant_id, q.merchant_name, q.user_id, q.user_name, l.status as lastStatus, COALESCE(lastExtend.end_queue, process.end_queue) as endTime, q.created_at, q.is_follow_up, q.follow_up_phone`).
 		From("queues as q").
 		LeftJoin("(SELECT queue_id, status FROM queue_histories as c WHERE id = (SELECT MAX(qh.id) FROM queue_histories as qh WHERE qh.queue_id = c.queue_id))  as l ON l.queue_id = q.id").
 		LeftJoin("(SELECT * FROM queue_histories as c WHERE id = (SELECT MAX(qh.id) FROM queue_histories as qh WHERE qh.queue_id = c.queue_id AND qh.status = 2)) as process ON process.queue_id = q.id").
@@ -108,7 +109,7 @@ func (s *GlobalService) GetQueuePaginated(ctx context.Context, payload *dto.Para
 			&temp.ID, &temp.IDStr, &temp.QueueNo, &temp.MedicalRecord,
 			&temp.LocationID, &temp.LocationName, &temp.Type, &temp.MerchantID,
 			&temp.MerchantName, &temp.CreatedByID, &temp.CreatedBy, &temp.Status,
-			&temp.EstEnd, &temp.CreatedAt,
+			&temp.EstEnd, &temp.CreatedAt, &temp.IsFollowUp, &temp.FollowUpPhone,
 		)
 		if err != nil {
 			return
@@ -179,18 +180,211 @@ func (s *GlobalService) GetQueuePaginated(ctx context.Context, payload *dto.Para
 	return
 }
 
-// func (s *GlobalService) GetQueueById(ctx context.Context, id int) (resp *dto.QueueRow, err error) {
-// 	row, err := s.globalRepository.FindQueueById(ctx, id)
-// 	if err != nil {
-// 		log.Errorf("err get Queue paginated")
-// 		return
-// 	}
-// 	resp = &dto.QueueRow{
-// 		ID:   row.ID,
-// 		Name: row.Name,
-// 	}
-// 	return
-// }
+func (s *GlobalService) UpdateFuQueueNo(ctx context.Context, id string, newPhone string) (err error) {
+	update, args, err := squirrel.
+		Update("queues").
+		Set("is_follow_up", 1).
+		Set("follow_up_phone", newPhone).
+		Where(squirrel.Eq{
+			"id_str": id,
+		}).
+		ToSql()
+
+	if err != nil {
+		log.Error("err sql update")
+		return
+	}
+
+	err = s.db.Exec(update, args...).Error
+
+	if err != nil {
+		log.Error("err update")
+		return
+	}
+
+	return
+}
+
+func (s *GlobalService) GetDashboardDisplay(ctx context.Context, payload *dto.ParamsQueueDisplay, merchantIdStr string) (resp *dto.QueueDataDisplayWrapper, err error) {
+	resp = &dto.QueueDataDisplayWrapper{
+		Queues: make([]*dto.QueueDataDisplay, 0),
+		Paginator: dto.DefaultPaginationDtoRow{
+			CurrentPage:   payload.Page,
+			RecordPerPage: payload.Limit,
+			LastPage:      0,
+			TotalItem:     0,
+		},
+	}
+	user, _ := authutil.GetCredential(ctx)
+
+	if payload.Limit < 1 {
+		payload.Limit = 1
+	}
+
+	payload.Page = payload.Page - 1
+
+	cond := squirrel.And{
+		squirrel.Eq{
+			"q.deleted_at": nil,
+		},
+		squirrel.LtOrEq{
+			"COALESCE(TIMESTAMPDIFF(MINUTE, diterima.created_at, NOW()),0)": 5, // 5 menit
+		},
+	}
+
+	if user.MerchantID != nil {
+		cond = append(cond, squirrel.Eq{
+			"q.merchant_id": *user.MerchantID,
+		})
+	}
+
+	if merchantIdStr != "" {
+		cond = append(cond, squirrel.Eq{
+			"m.id_str": payload.MerchantIdStr,
+		})
+	}
+
+	if payload.Search != nil && *payload.Search != "" {
+		cond = append(cond, squirrel.Or{
+			squirrel.Like{
+				"q.medical_record": fmt.Sprintf("%%%s%%", *payload.Search),
+			},
+			squirrel.Like{
+				"q.queue_no": fmt.Sprintf("%%%s%%", *payload.Search),
+			},
+		})
+	}
+
+	// ----- Data
+	getParentStr, argsParent, err := squirrel.
+		Select("q.id, q.medical_record, q.queue_no, q.type, l.status, COALESCE(lastExtend.end_queue, process.end_queue, '-') as endTime").
+		From("queues as q").
+		LeftJoin("(SELECT queue_id, status FROM queue_histories as c WHERE id = (SELECT MAX(qh.id) FROM queue_histories as qh WHERE qh.queue_id = c.queue_id))  as l ON l.queue_id = q.id").
+		LeftJoin("(SELECT * FROM queue_histories as c WHERE id = (SELECT MAX(qh.id) FROM queue_histories as qh WHERE qh.queue_id = c.queue_id AND qh.status = 2)) as process ON process.queue_id = q.id").
+		LeftJoin("(SELECT * FROM queue_histories as c WHERE id = (SELECT MAX(qh.id) FROM queue_histories as qh WHERE qh.queue_id = c.queue_id AND qh.status = 2 AND qh.type = 2)) as lastExtend ON lastExtend.queue_id = q.id").
+		LeftJoin("(SELECT * FROM queue_histories as c WHERE id = (SELECT MAX(qh.id) FROM queue_histories as qh WHERE qh.queue_id = c.queue_id AND qh.status = 4)) as diterima ON diterima.queue_id = q.id").
+		InnerJoin("merchants m ON m.id = q.merchant_id").
+		Where(cond).
+		Limit(payload.Limit).
+		Offset(payload.Limit * payload.Page).
+		OrderBy("l.status ASC, q.created_at ASC").
+		ToSql()
+
+	if err != nil {
+
+		return
+	}
+
+	row, err := s.db.WithContext(ctx).Raw(getParentStr, argsParent...).Rows()
+	if err != nil {
+		return
+	}
+
+	for row.Next() {
+		temp := dto.QueueDataDisplay{}
+		err = row.Scan(
+			&temp.ID, &temp.MedicalRecord, &temp.QueueNo,
+			&temp.Type, &temp.Status, &temp.EstEnd,
+		)
+		if err != nil {
+			return
+		}
+
+		resp.Queues = append(resp.Queues, &temp)
+	}
+
+	// ----- End Data
+
+	// ----- Count Pagination
+	getStrCount, argStrCount, err := squirrel.Select(`COUNT(q.id) as id`).
+		From("queues as q").
+		LeftJoin("(SELECT queue_id, status FROM queue_histories as c WHERE id = (SELECT MAX(qh.id) FROM queue_histories as qh WHERE qh.queue_id = c.queue_id))  as l ON l.queue_id = q.id").
+		LeftJoin("(SELECT * FROM queue_histories as c WHERE id = (SELECT MAX(qh.id) FROM queue_histories as qh WHERE qh.queue_id = c.queue_id AND qh.status = 2)) as process ON process.queue_id = q.id").
+		LeftJoin("(SELECT * FROM queue_histories as c WHERE id = (SELECT MAX(qh.id) FROM queue_histories as qh WHERE qh.queue_id = c.queue_id AND qh.status = 2 AND qh.type = 2)) as lastExtend ON lastExtend.queue_id = q.id").
+		LeftJoin("(SELECT * FROM queue_histories as c WHERE id = (SELECT MAX(qh.id) FROM queue_histories as qh WHERE qh.queue_id = c.queue_id AND qh.status = 4)) as diterima ON diterima.queue_id = q.id").
+		InnerJoin("merchants m ON m.id = q.merchant_id").
+		Where(cond).
+		ToSql()
+	if err != nil {
+		return
+	}
+
+	var totalRows int64
+	err = s.db.WithContext(ctx).Raw(getStrCount, argStrCount...).Row().Scan(&totalRows)
+	if err != nil {
+		return
+	}
+
+	total := totalRows / int64(payload.Limit)
+	remainder := totalRows % int64(payload.Limit)
+
+	if remainder == 0 {
+		resp.Paginator.LastPage = uint64(total)
+	} else {
+		resp.Paginator.LastPage = uint64(total + 1)
+	}
+	resp.Paginator.RecordPerPage = payload.Limit
+	resp.Paginator.TotalItem = uint64(totalRows)
+	// ----- End count pagination
+
+	return
+}
+
+func (s *GlobalService) GetQueueBySearch(ctx context.Context, merchantId string, search string) (resp *dto.QueueUserSearch, err error) {
+	resp = &dto.QueueUserSearch{}
+	cond := squirrel.And{
+		squirrel.Eq{
+			"q.deleted_at": nil,
+		},
+		squirrel.Eq{
+			"m.id_str": merchantId,
+		},
+	}
+
+	if search != "" {
+		cond = append(cond, squirrel.Or{
+			squirrel.Like{
+				"q.medical_record": fmt.Sprintf("%%%s%%", search),
+			},
+			squirrel.Like{
+				"q.queue_no": fmt.Sprintf("%%%s%%", search),
+			},
+		})
+	}
+
+	// ----- Data
+	getParentStr, argsParent, err := squirrel.
+		Select("q.id_str, q.medical_record, q.queue_no, q.type, l.status, COALESCE(lastExtend.end_queue, process.end_queue, '-') as endTime, q.is_follow_up, q.follow_up_phone").
+		From("queues as q").
+		LeftJoin("(SELECT queue_id, status FROM queue_histories as c WHERE id = (SELECT MAX(qh.id) FROM queue_histories as qh WHERE qh.queue_id = c.queue_id))  as l ON l.queue_id = q.id").
+		LeftJoin("(SELECT * FROM queue_histories as c WHERE id = (SELECT MAX(qh.id) FROM queue_histories as qh WHERE qh.queue_id = c.queue_id AND qh.status = 2)) as process ON process.queue_id = q.id").
+		LeftJoin("(SELECT * FROM queue_histories as c WHERE id = (SELECT MAX(qh.id) FROM queue_histories as qh WHERE qh.queue_id = c.queue_id AND qh.status = 2 AND qh.type = 2)) as lastExtend ON lastExtend.queue_id = q.id").
+		InnerJoin("merchants m ON m.id = q.merchant_id").
+		Where(cond).
+		Limit(1).
+		OrderBy("q.id DESC").
+		ToSql()
+
+	if err != nil {
+		return
+	}
+
+	err = s.db.Raw(getParentStr, argsParent...).
+		Row().
+		Scan(&resp.ID, &resp.MedicalRecord, &resp.QueueNo,
+			&resp.Type, &resp.Status, &resp.EstEnd, &resp.IsFollowUp, &resp.FollowUpPhone)
+
+	if err == sql.ErrNoRows {
+		err = gorm.ErrRecordNotFound
+		return
+	}
+
+	if err != nil {
+		return
+	}
+
+	return
+}
 
 func (s *GlobalService) CreateQueue(ctx context.Context, payload *dto.PayloadQueue) (resp *int64, err error) {
 	user, _ := authutil.GetCredential(ctx)

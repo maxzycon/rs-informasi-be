@@ -35,14 +35,18 @@ const (
 	GetAdvertisementPluck     = "advertisements/list"
 	GetAdvertisementPaginated = "advertisements/paginated"
 	Advertisement             = "advertisements"
+	AdvertisementContent      = "advertisements/content/:id"
 	AdvertisementById         = "advertisements/:id"
 
 	GetQueuePaginated = "queues/paginated"
 	Queue             = "queues"
 	QueueById         = "queues/:id"
+	QueueBySearch     = "queues/detail"
+	UpdateQueueFu     = "queues/fu/:id"
 	QueueStatusById   = "queues/status/:id"
 
 	AnalyticDashboard = "analytic/dashboard"
+	DisplayDashboard  = "dashboard"
 )
 
 type GlobalControllerParams struct {
@@ -120,4 +124,12 @@ func (pc *GlobalController) Init() {
 
 	// ----- Analytic
 	pc.v1.Get(AnalyticDashboard, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_FARMASI, role.ROLE_KASIR, role.ROLE_MARKETING, role.ROLE_MULTIMEDIA, role.ROLE_SUPER_ADMIN}), pc.handlerGetDashboardAnalytic)
+
+	// ----- Display dashboard
+	pc.v1.Get(DisplayDashboard, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_FARMASI, role.ROLE_KASIR, role.ROLE_MARKETING, role.ROLE_MULTIMEDIA, role.ROLE_SUPER_ADMIN}), pc.handlerDisplayQueue)
+	pc.v1.Get(QueueBySearch, pc.handlerQueueBySearch)
+	pc.v1.Put(UpdateQueueFu, pc.handlerUpdateFollowUpPhone)
+
+	// ----- Content
+	pc.v1.Get(AdvertisementContent, pc.handlerContentAdvertisement)
 }
