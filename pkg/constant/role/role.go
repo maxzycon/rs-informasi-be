@@ -5,6 +5,6 @@ var (
 	ROLE_SUPER_ADMIN uint = 2
 	ROLE_MULTIMEDIA  uint = 3
 	ROLE_FARMASI     uint = 4
-	ROLE_MARKETING   uint = 5
+	ROLE_MARKETING   uint = 5 // ----- same like owner
 	ROLE_KASIR       uint = 6
 )
