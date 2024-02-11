@@ -319,6 +319,7 @@ func (s *GlobalService) GetAdvertisementById(ctx context.Context, id int) (resp 
 		MerchantName:              &row.Merchant.Name,
 		CategoryAdvertisementID:   &row.AdvertisementCategoryID,
 		CategoryAdvertisementName: &row.AdvertisementCategory.Name,
+		Path:                      s.conf.AWS_S3_URL + "/" + row.DocumentPath,
 	}
 
 	d, err := row.DateEnd.Value()

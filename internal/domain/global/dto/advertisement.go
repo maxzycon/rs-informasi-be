@@ -23,6 +23,7 @@ type AdvertisementDetailRow struct {
 	MerchantName              *string `json:"merchant_name"`
 	CategoryAdvertisementID   *uint   `json:"category_advertisement_id"`
 	CategoryAdvertisementName *string `json:"category_advertisement_name"`
+	Path                      string  `json:"document_path"`
 }
 
 type AdvertisementData struct {
