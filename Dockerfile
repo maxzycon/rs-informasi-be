@@ -1,8 +1,5 @@
 FROM golang:1.20-bullseye as build
 
-RUN apt-get update -y
-RUN apt-get install -y ca-certificates
-
 WORKDIR /app
 
 COPY go.mod /app/
@@ -25,6 +22,7 @@ WORKDIR /app
 EXPOSE 8082
 
 RUN apt-get update -y 
+RUN apt-get install -y ca-certificates
 
 ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ=Asia/Jakarta
