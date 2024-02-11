@@ -1,8 +1,6 @@
 package controller
 
 import (
-	"fmt"
-
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/log"
 	"github.com/maxzycon/rs-farmasi-be/internal/domain/s3/dto"
@@ -17,9 +15,7 @@ func (c *S3Controller) handlerUploadToS3(f *fiber.Ctx) (err error) {
 		return
 	}
 
-	fmt.Println()
-
-	folder := f.Query("folder", "")
+	folder := f.FormValue("folder")
 
 	path, err := c.s3Service.UploadFileToS3(f.Context(), file, "go-clinic-bucket", &folder)
 	if err != nil {
