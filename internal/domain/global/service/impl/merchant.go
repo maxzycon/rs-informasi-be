@@ -71,8 +71,13 @@ func (s *GlobalService) GetMerchantPaginated(ctx context.Context, payload *dto.P
 			&temp.Phone, &temp.Photo, &temp.Address, &temp.CategoryID,
 			&temp.CategoryName,
 		)
+
 		if err != nil {
 			return
+		}
+
+		if temp.Photo != nil {
+			*temp.Photo = s.conf.AWS_S3_URL + "/" + *temp.Photo
 		}
 
 		resp.Items.Merchants = append(resp.Items.Merchants, &temp)
@@ -141,6 +146,10 @@ func (s *GlobalService) GetMerchantById(ctx context.Context, id int) (resp *dto.
 		Photo:              row.Photo,
 		Address:            row.Address,
 		MerchantCategoryID: row.MerchantCategoryID,
+	}
+
+	if row.Photo != nil {
+		*row.Photo = s.conf.AWS_S3_URL + "/" + *row.Photo
 	}
 	return
 }

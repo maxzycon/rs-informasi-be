@@ -96,7 +96,7 @@ func (s *UserService) GetUserPaginated(ctx context.Context, payload *pagination.
 	list, ok := resp.Items.([]*model.User)
 	if ok {
 		for _, v := range list {
-			respToDto = append(respToDto, &dto.UserRow{
+			temp := &dto.UserRow{
 				ID:          v.ID,
 				Phone:       v.Phone,
 				Name:        v.Name,
@@ -106,7 +106,12 @@ func (s *UserService) GetUserPaginated(ctx context.Context, payload *pagination.
 				Email:       v.Email,
 				MerchantID:  v.MerchantID,
 				Role:        v.Role,
-			})
+			}
+
+			if temp.ProfilePath != nil {
+				*temp.ProfilePath = s.conf.AWS_S3_URL + "/" + *temp.ProfilePath
+			}
+			respToDto = append(respToDto, temp)
 		}
 	}
 	resp.Items = respToDto
@@ -129,6 +134,10 @@ func (s *UserService) GetById(ctx context.Context, id int) (resp *dto.UserRowDet
 		Email:       row.Email,
 		MerchantID:  row.MerchantID,
 		Role:        row.Role,
+	}
+
+	if resp.ProfilePath != nil {
+		*resp.ProfilePath = s.conf.AWS_S3_URL + "/" + *resp.ProfilePath
 	}
 	return
 }
