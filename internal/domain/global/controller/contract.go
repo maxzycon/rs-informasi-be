@@ -118,6 +118,7 @@ func (pc *GlobalController) Init() {
 
 	// ----- Queue
 	pc.v1.Get(GetQueuePaginated, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN, role.ROLE_KASIR, role.ROLE_FARMASI}), pc.handlerGetQueuePaginated)
+	pc.v1.Get(QueueById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN, role.ROLE_KASIR, role.ROLE_FARMASI}), pc.handlerGetQueueById)
 	pc.v1.Post(Queue, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN, role.ROLE_KASIR}), pc.handlerCreateQueue)
 	pc.v1.Put(QueueStatusById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN, role.ROLE_KASIR, role.ROLE_FARMASI}), pc.handlerUpdateStatusQueue)
 	pc.v1.Put(QueueById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN, role.ROLE_KASIR, role.ROLE_FARMASI}), pc.handlerUpdateQueueById)

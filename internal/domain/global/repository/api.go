@@ -53,6 +53,7 @@ type GlobalRepository interface {
 	DeleteAdvertisementById(ctx context.Context, id int) (resp *int64, err error)
 
 	// ----- Queue
+	FindQueueById(ctx context.Context, id int) (resp *model.Queue, err error)
 	DeleteQueueById(ctx context.Context, id int) (resp *int64, err error)
 	UpdateQueueById(ctx context.Context, id int, entity *model.Queue) (resp *int64, err error)
 }

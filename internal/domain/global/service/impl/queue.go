@@ -497,6 +497,24 @@ func (s *GlobalService) DeleteQueueById(ctx context.Context, id int) (resp *int6
 	return
 }
 
+func (s *GlobalService) GetQueueById(ctx context.Context, id int) (resp *dto.QueueRowDetail, err error) {
+	data, err := s.globalRepository.FindQueueById(ctx, id)
+	if err != nil {
+		log.Errorf("err delete Queue %d", id)
+		return
+	}
+
+	resp = &dto.QueueRowDetail{
+		ID:            data.ID,
+		QueueNo:       data.QueueNo,
+		MedicalRecord: data.MedicalRecord,
+		LocationID:    data.LocationID,
+		Type:          data.Type,
+	}
+
+	return
+}
+
 func (s *GlobalService) UpdateQueueById(ctx context.Context, id int, payload *dto.PayloadQueue) (resp *int64, err error) {
 	user, _ := authutil.GetCredential(ctx)
 	queue := &model.Queue{

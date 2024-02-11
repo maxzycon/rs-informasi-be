@@ -119,6 +119,24 @@ func (c *GlobalController) handlerUpdateStatusQueue(f *fiber.Ctx) (err error) {
 	return httputil.WriteSuccessResponseAffectedRow(f, resp)
 }
 
+func (c *GlobalController) handlerGetQueueById(f *fiber.Ctx) (err error) {
+	id, err := f.ParamsInt("id")
+	if err != nil {
+		err = errors.ErrBadRequest
+		log.Errorf("err parse params update Queue")
+		return httputil.WriteErrorResponse(f, err)
+	}
+
+	resp, err := c.globalService.GetQueueById(f.Context(), id)
+
+	if err != nil {
+		log.Errorf("err service at controller update Queue :%+v", err)
+		return httputil.WriteErrorResponse(f, err)
+	}
+
+	return httputil.WriteSuccessResponse(f, resp)
+}
+
 func (c *GlobalController) handlerUpdateQueueById(f *fiber.Ctx) (err error) {
 	id, err := f.ParamsInt("id")
 	if err != nil {

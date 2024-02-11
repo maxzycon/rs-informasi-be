@@ -31,6 +31,14 @@ type QueueRowPaginated struct {
 	CreatedAt     time.Time  `json:"created_at"`
 }
 
+type QueueRowDetail struct {
+	ID            uint   `json:"id"`
+	QueueNo       string `json:"queue_no"`
+	MedicalRecord string `json:"medical_record"`
+	LocationID    uint   `json:"location_id"`
+	Type          uint   `json:"type"`
+}
+
 type QueueWrapper struct {
 	Summary *SummaryQueue     `json:"summary"`
 	Items   *QueueDataWrapper `json:"items"`
