@@ -83,7 +83,8 @@ func (s *GlobalService) GetQueuePaginated(ctx context.Context, payload *dto.Para
 		})
 	}
 
-	getStr, argStr, err := squirrel.Select(`q.id, q.id_str, q.queue_no, q.medical_record, q.location_id, q.location_name, q.type, q.merchant_id, q.merchant_name, q.user_id, q.user_name, l.status as lastStatus, COALESCE(lastExtend.end_queue, process.end_queue) as endTime, q.created_at, q.is_follow_up, q.follow_up_phone`).
+	getStr, argStr, err := squirrel.Select(`q.id, q.id_str, q.queue_no, q.medical_record, q.location_id, q.location_name, q.type, q.merchant_id, q.merchant_name, q.user_id, q.user_name, l.status as lastStatus, COALESCE(lastExtend.end_queue, process.end_queue) as endTime, q.created_at, q.is_follow_up, q.follow_up_phone, 
+	(CASE WHEN lastExtend.end_queue IS NOT NULL THEN 1 ELSE 0 END) as isExtend`).
 		From("queues as q").
 		LeftJoin("(SELECT queue_id, status FROM queue_histories as c WHERE id = (SELECT MAX(qh.id) FROM queue_histories as qh WHERE qh.queue_id = c.queue_id))  as l ON l.queue_id = q.id").
 		LeftJoin("(SELECT * FROM queue_histories as c WHERE id = (SELECT MAX(qh.id) FROM queue_histories as qh WHERE qh.queue_id = c.queue_id AND qh.status = 2)) as process ON process.queue_id = q.id").
@@ -110,6 +111,7 @@ func (s *GlobalService) GetQueuePaginated(ctx context.Context, payload *dto.Para
 			&temp.LocationID, &temp.LocationName, &temp.Type, &temp.MerchantID,
 			&temp.MerchantName, &temp.CreatedByID, &temp.CreatedBy, &temp.Status,
 			&temp.EstEnd, &temp.CreatedAt, &temp.IsFollowUp, &temp.FollowUpPhone,
+			&temp.IsExtend,
 		)
 		if err != nil {
 			return

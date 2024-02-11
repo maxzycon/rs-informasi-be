@@ -28,6 +28,7 @@ type QueueRowPaginated struct {
 	IsFollowUp    bool       `json:"is_follow_up"`
 	FollowUpPhone *string    `json:"follow_up_number"`
 	EstEnd        *time.Time `json:"est_end"`
+	IsExtend      *bool      `json:"is_extend"`
 	CreatedAt     time.Time  `json:"created_at"`
 }
 
