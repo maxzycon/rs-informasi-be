@@ -2,6 +2,7 @@ package impl
 
 import (
 	"context"
+	"time"
 
 	"github.com/Masterminds/squirrel"
 	"github.com/gofiber/fiber/v2/log"
@@ -94,15 +95,20 @@ func (s *GlobalService) GetAdvertisementPaginated(ctx context.Context, payload *
 
 	for row.Next() {
 		temp := dto.AdvertisementRow{}
+		var start time.Time
+		var end time.Time
 		err = row.Scan(
 			&temp.ID, &temp.Name, &temp.Company,
-			&temp.DateStart, &temp.DateEnd, &temp.MerchantID,
+			&start, &end, &temp.MerchantID,
 			&temp.MerchantName, &temp.CategoryAdvertisementID,
 			&temp.CategoryAdvertisementName, &temp.Status,
 		)
 		if err != nil {
 			return
 		}
+
+		temp.DateStart = timeutil.ToStringDateOnly(start)
+		temp.DateEnd = timeutil.ToStringDateOnly(end)
 		resp.AdvertisementData.Advertisements = append(resp.AdvertisementData.Advertisements, &temp)
 	}
 
@@ -309,13 +315,31 @@ func (s *GlobalService) GetAdvertisementById(ctx context.Context, id int) (resp 
 		ID:                        row.ID,
 		Name:                      row.Name,
 		Company:                   row.Company,
-		DateStart:                 row.DateStart.GormDataType(),
-		DateEnd:                   row.DateEnd.GormDataType(),
 		MerchantID:                &row.Merchant.ID,
 		MerchantName:              &row.Merchant.Name,
 		CategoryAdvertisementID:   &row.AdvertisementCategoryID,
 		CategoryAdvertisementName: &row.AdvertisementCategory.Name,
 	}
+
+	d, err := row.DateEnd.Value()
+	if err != nil {
+		log.Errorf("err get Advertisement paginated")
+		return
+	}
+
+	c, err := row.DateEnd.Value()
+	if err != nil {
+		log.Errorf("err get Advertisement paginated")
+		return
+	}
+	r, _ := d.(time.Time)
+	finalStart := timeutil.ToStringDateOnly(r)
+	resp.DateStart = finalStart
+
+	r, _ = c.(time.Time)
+	end := timeutil.ToStringDateOnly(r)
+	resp.DateEnd = end
+
 	return
 }
 
