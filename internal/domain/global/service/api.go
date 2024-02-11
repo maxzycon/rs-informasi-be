@@ -58,6 +58,7 @@ type GlobalService interface {
 	GetQueuePaginated(ctx context.Context, payload *dto.ParamsQueueQueries) (resp dto.QueueWrapper, err error)
 	CreateQueue(ctx context.Context, payload *dto.PayloadQueue) (resp *int64, err error)
 	UpdateStatusQueueById(ctx context.Context, id int, payload *dto.PayloadUpdateQueue) (resp *int64, err error)
+	UpdateQueueById(ctx context.Context, id int, payload *dto.PayloadQueue) (resp *int64, err error)
 	DeleteQueueById(ctx context.Context, id int) (resp *int64, err error)
 
 	// ----- Analytic

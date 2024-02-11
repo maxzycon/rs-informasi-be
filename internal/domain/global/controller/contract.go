@@ -120,6 +120,7 @@ func (pc *GlobalController) Init() {
 	pc.v1.Get(GetQueuePaginated, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN, role.ROLE_KASIR, role.ROLE_FARMASI}), pc.handlerGetQueuePaginated)
 	pc.v1.Post(Queue, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN, role.ROLE_KASIR}), pc.handlerCreateQueue)
 	pc.v1.Put(QueueStatusById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN, role.ROLE_KASIR, role.ROLE_FARMASI}), pc.handlerUpdateStatusQueue)
+	pc.v1.Put(QueueById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN, role.ROLE_KASIR, role.ROLE_FARMASI}), pc.handlerUpdateQueueById)
 	pc.v1.Delete(QueueById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN, role.ROLE_KASIR, role.ROLE_FARMASI}), pc.handlerDeleteQueue)
 
 	// ----- Analytic

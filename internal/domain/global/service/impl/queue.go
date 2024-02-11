@@ -426,7 +426,7 @@ func (s *GlobalService) CreateQueue(ctx context.Context, payload *dto.PayloadQue
 		queue.MerchantName = merchant.Name
 
 		// ----- get location
-		location, err := s.globalRepository.FindLocationById(ctx, int(queue.MerchantID))
+		location, err := s.globalRepository.FindLocationById(ctx, int(payload.LocationID))
 		if err != nil {
 			return err
 		}
@@ -492,6 +492,40 @@ func (s *GlobalService) DeleteQueueById(ctx context.Context, id int) (resp *int6
 	resp, err = s.globalRepository.DeleteQueueById(ctx, id)
 	if err != nil {
 		log.Errorf("err delete Queue %d", id)
+		return
+	}
+	return
+}
+
+func (s *GlobalService) UpdateQueueById(ctx context.Context, id int, payload *dto.PayloadQueue) (resp *int64, err error) {
+	user, _ := authutil.GetCredential(ctx)
+	queue := &model.Queue{
+		LocationID:    payload.LocationID,
+		MedicalRecord: payload.MedicalRecord,
+		QueueNo:       payload.QueueNo,
+		Type:          payload.Type,
+		ModifiedBy:    &user.Username,
+	}
+
+	if payload.MerchantID != nil {
+		// ----- get merchant
+		merchant, errr := s.globalRepository.FindMerchantById(ctx, int(*payload.MerchantID))
+		if errr != nil {
+			err = errr
+			return
+		}
+		queue.MerchantName = merchant.Name
+	}
+
+	// ----- get location
+	location, err := s.globalRepository.FindLocationById(ctx, int(payload.LocationID))
+	if err != nil {
+		return
+	}
+	queue.LocationName = location.Name
+	resp, err = s.globalRepository.UpdateQueueById(ctx, id, queue)
+	if err != nil {
+		log.Errorf("err update Location %d", id)
 		return
 	}
 	return
