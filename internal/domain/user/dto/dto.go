@@ -1,5 +1,7 @@
 package dto
 
+import uuid "github.com/satori/go.uuid"
+
 type UserRow struct {
 	ID          uint    `json:"id"`
 	Name        string  `json:"name"`
@@ -57,15 +59,16 @@ type PayloadCreateUser struct {
 }
 
 type LoginRes struct {
-	ID          uint    `json:"id"`
-	Username    string  `json:"username"`
-	Name        string  `json:"name"`
-	Email       string  `json:"email"`
-	Phone       string  `json:"phone"`
-	Photo       *string `json:"photo"`
-	AccessToken string  `json:"access_token"`
-	Role        uint    `json:"role"`
-	Exp         int64   `json:"exp"`
+	ID            uint       `json:"id"`
+	Username      string     `json:"username"`
+	Name          string     `json:"name"`
+	Email         string     `json:"email"`
+	Phone         string     `json:"phone"`
+	Photo         *string    `json:"photo"`
+	MerchantIDStr *uuid.UUID `json:"merchant_id_str"`
+	AccessToken   string     `json:"access_token"`
+	Role          uint       `json:"role"`
+	Exp           int64      `json:"exp"`
 }
 
 type UserPaginatedRow struct {

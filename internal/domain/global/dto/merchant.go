@@ -13,6 +13,7 @@ type MerchantRow struct {
 
 type MerchantRowPaginated struct {
 	ID           uint    `json:"id"`
+	IDStr        string  `json:"id_str"`
 	Name         string  `json:"name"`
 	Email        string  `json:"email"`
 	PICName      string  `json:"pic_name"`

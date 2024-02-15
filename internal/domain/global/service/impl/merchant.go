@@ -46,7 +46,7 @@ func (s *GlobalService) GetMerchantPaginated(ctx context.Context, payload *dto.P
 
 	// ---- get data merchant
 	getStr, argStr, err := squirrel.
-		Select("m.id, m.name, m.email, m.pic_name, m.phone, m.photo, m.address, m.merchant_category_id, mc.name").
+		Select("m.id, m.name, m.email, m.pic_name, m.phone, m.photo, m.address, m.merchant_category_id, mc.name, mc.id_str").
 		From("merchants m").
 		LeftJoin("merchant_categories mc ON mc.id = m.merchant_category_id").
 		Where(cond).
@@ -69,7 +69,7 @@ func (s *GlobalService) GetMerchantPaginated(ctx context.Context, payload *dto.P
 		err = row.Scan(
 			&temp.ID, &temp.Name, &temp.Email, &temp.PICName,
 			&temp.Phone, &temp.Photo, &temp.Address, &temp.CategoryID,
-			&temp.CategoryName,
+			&temp.CategoryName, &temp.IDStr,
 		)
 
 		if err != nil {

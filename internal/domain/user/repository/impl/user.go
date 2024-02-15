@@ -45,7 +45,7 @@ func (r *UserRepository) FindByIdAndDepartmentId(ctx context.Context, id int, de
 
 func (r UserRepository) FindUserByUsernameLogin(ctx context.Context, username string) (resp *model.User, err error) {
 	resp = &model.User{}
-	tx := r.db.Where("username = ?", username).First(&resp)
+	tx := r.db.Where("username = ?", username).Preload("Merchant").First(&resp)
 	return resp, tx.Error
 }
 

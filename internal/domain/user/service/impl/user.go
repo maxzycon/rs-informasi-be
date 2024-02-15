@@ -53,12 +53,21 @@ func (s *UserService) Login(ctx context.Context, payload dto.PayloadLogin) (resp
 		Name:        user.Name,
 		Email:       user.Email,
 		Username:    user.Username,
-		Photo:       user.Photo,
 		Phone:       user.Phone,
 		AccessToken: AccessToken,
 		Role:        user.Role,
 		Exp:         exp,
 	}
+
+	if user.Photo != nil {
+		photo := s.conf.AWS_S3_URL + "/" + *user.Photo
+		resp.Photo = &photo
+	}
+
+	if user.MerchantID != nil {
+		resp.MerchantIDStr = &user.Merchant.IDStr
+	}
+
 	return
 }
 
