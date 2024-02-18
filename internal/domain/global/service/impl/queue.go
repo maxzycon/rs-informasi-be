@@ -466,10 +466,9 @@ func (s *GlobalService) UpdateStatusQueueById(ctx context.Context, id int, paylo
 
 		// ----- process default / extend
 		if payload.NewStatus == status.PROCESS {
-			now := time.Now().Local()
-			end := now.Add(time.Hour +
-				time.Minute*time.Duration(payload.Duration) +
-				time.Second)
+			loc, _ := time.LoadLocation("Asia/Jakarta")
+			now := time.Now().In(loc)
+			end := now.Add(time.Minute * time.Duration(payload.Duration))
 			queue.StartQueue = &now
 			queue.Duration = &payload.Duration
 			queue.EndQueue = &end
