@@ -24,7 +24,7 @@ func (r *UserRepository) FindAllUserPaginated(ctx context.Context, payload *pagi
 
 	if payload.Search != nil && *payload.Search != "" {
 		search := fmt.Sprintf("%%%s%%", *payload.Search)
-		sql.Where("username LIKE ?", search)
+		sql = sql.Where("username LIKE ?", search)
 	}
 	sql.Scopes(payload.PaginationV2(&resp.Paginator)).Find(&users)
 	resp.Items = users

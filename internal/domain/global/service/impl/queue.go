@@ -464,6 +464,10 @@ func (s *GlobalService) UpdateStatusQueueById(ctx context.Context, id int, paylo
 			UserName:   user.Name,
 		}
 
+		if payload.Type == typequeuedetail.EXTEND {
+			queue.Type = typequeuedetail.EXTEND
+		}
+
 		// ----- process default / extend
 		if payload.NewStatus == status.PROCESS {
 			loc, _ := time.LoadLocation("Asia/Jakarta")

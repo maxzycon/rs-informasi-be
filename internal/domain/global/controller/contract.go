@@ -25,7 +25,7 @@ const (
 	GetMerchantPaginated = "merchants/paginated"
 	Merchant             = "merchants"
 	MerchantById         = "merchants/:id"
-	MerchantConfigById   = Merchant + "/config"
+	MerchantConfigById   = Merchant + "/detail/config"
 
 	GetAdvertisementCategoryPluck     = "advertisement_categories/list"
 	GetAdvertisementCategoryPaginated = "advertisement_categories/paginated"
@@ -129,7 +129,7 @@ func (pc *GlobalController) Init() {
 
 	// ----- Display dashboard
 	pc.v1.Get(DisplayDashboard, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_FARMASI, role.ROLE_KASIR, role.ROLE_MARKETING, role.ROLE_MULTIMEDIA, role.ROLE_SUPER_ADMIN}), pc.handlerDisplayQueue)
-	pc.v1.Get(QueueBySearch, pc.handlerQueueBySearch)
+	pc.v1.Get(QueueBySearch+"/search", pc.handlerQueueBySearch)
 	pc.v1.Put(UpdateQueueFu, pc.handlerUpdateFollowUpPhone)
 
 	// ----- Content

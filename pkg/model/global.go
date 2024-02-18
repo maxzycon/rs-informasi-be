@@ -35,7 +35,7 @@ type User struct {
 	MerchantID *uint
 	Merchant   Merchant
 
-	Role uint `gorm:"not null;"`
+	Role uint `gorm:"not null"`
 }
 
 type Merchant struct {

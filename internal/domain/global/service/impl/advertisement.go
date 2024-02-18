@@ -60,6 +60,12 @@ func (s *GlobalService) GetAdvertisementPaginated(ctx context.Context, payload *
 		})
 	}
 
+	if payload.Search != nil && *payload.Search != "" {
+		cond = append(cond, squirrel.Eq{
+			"a.name": payload.Search,
+		})
+	}
+
 	// ----- Get data
 	getStr, argStr, err := squirrel.Select(`a.id as id, 
 			a.name, a.company, a.date_start, a.date_end, 
