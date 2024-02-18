@@ -32,6 +32,7 @@ type GlobalService interface {
 	GetMerchantPaginated(ctx context.Context, payload *dto.ParamsPaginationMerchant) (resp dto.MerchantWrapper, err error)
 	GetMerchantPluck(ctx context.Context) (resp []*dto.DefaultPluck, err error)
 	GetMerchantById(ctx context.Context, id int) (resp *dto.MerchantRow, err error)
+	GetRunningTextByMerchantIdStr(ctx context.Context, id string) (resp *dto.RunningText, err error)
 	CreateMerchant(ctx context.Context, payload *dto.PayloadMerchant) (resp *int64, err error)
 	UpdateMerchantById(ctx context.Context, id int, payload *dto.PayloadMerchant) (resp *int64, err error)
 	UpdateMerchantConfigById(ctx context.Context, id int, payload *dto.PayloadUpdateConfig) (resp *int64, err error)

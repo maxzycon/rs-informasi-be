@@ -10,6 +10,19 @@ import (
 	"github.com/maxzycon/rs-farmasi-be/pkg/model"
 )
 
+func (s *GlobalService) GetRunningTextByMerchantIdStr(ctx context.Context, id string) (resp *dto.RunningText, err error) {
+	merchant := model.Merchant{}
+	err = s.db.WithContext(ctx).Model(&model.Merchant{}).Where("id_str = ?", id).First(&merchant).Error
+	if err != nil {
+		return
+	}
+
+	resp = &dto.RunningText{
+		Value: *merchant.RunningText,
+	}
+	return
+}
+
 func (s *GlobalService) GetMerchantPaginated(ctx context.Context, payload *dto.ParamsPaginationMerchant) (resp dto.MerchantWrapper, err error) {
 	resp = dto.MerchantWrapper{
 		SummaryMerchant: &dto.SummaryMerchant{

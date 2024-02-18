@@ -117,6 +117,23 @@ func (c *GlobalController) handlerGetMerchantById(f *fiber.Ctx) (err error) {
 	return httputil.WriteSuccessResponse(f, resp)
 }
 
+func (c *GlobalController) handlerGetRunningTextByMerchantIdStr(f *fiber.Ctx) (err error) {
+	id := f.Params("id")
+	if id == "" {
+		err = errors.ErrBadRequest
+		log.Errorf("err parse params Merchant get by id")
+		return httputil.WriteErrorResponse(f, err)
+	}
+	resp, err := c.globalService.GetRunningTextByMerchantIdStr(f.Context(), id)
+
+	if err != nil {
+		log.Errorf("err service at controller Merchant get by id:%+v", err)
+		return httputil.WriteErrorResponse(f, err)
+	}
+
+	return httputil.WriteSuccessResponse(f, resp)
+}
+
 func (c *GlobalController) handlerDeleteMerchant(f *fiber.Ctx) (err error) {
 	id, err := f.ParamsInt("id")
 	if err != nil {

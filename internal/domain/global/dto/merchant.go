@@ -60,3 +60,7 @@ type PayloadMerchant struct {
 type PayloadUpdateConfig struct {
 	RunningText *string `json:"running_text"`
 }
+
+type RunningText struct {
+	Value string `json:"value"`
+}

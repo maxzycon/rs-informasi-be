@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/maxzycon/rs-farmasi-be/pkg/authutil"
+	"github.com/maxzycon/rs-farmasi-be/pkg/constant/role"
 	"github.com/maxzycon/rs-farmasi-be/pkg/model"
 	"github.com/maxzycon/rs-farmasi-be/pkg/util/pagination"
 	"gorm.io/gorm"
@@ -12,6 +13,7 @@ import (
 
 func (r *UserRepository) FindAllUserPaginated(ctx context.Context, payload *pagination.DefaultPaginationPayload, claims *authutil.UserClaims) (resp pagination.DefaultPagination, err error) {
 	var users []*model.User = make([]*model.User, 0)
+	user, _ := authutil.GetCredential(ctx)
 	sql := r.db.WithContext(ctx)
 
 	if payload.Order == "" {
@@ -26,6 +28,11 @@ func (r *UserRepository) FindAllUserPaginated(ctx context.Context, payload *pagi
 		search := fmt.Sprintf("%%%s%%", *payload.Search)
 		sql = sql.Where("username LIKE ?", search)
 	}
+
+	if user.Role != role.ROLE_OWNER && user.Role != role.ROLE_MARKETING {
+		sql = sql.Where("merchant_id = ?", *user.MerchantID)
+	}
+
 	sql.Scopes(payload.PaginationV2(&resp.Paginator)).Find(&users)
 	resp.Items = users
 	return

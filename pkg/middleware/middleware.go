@@ -55,6 +55,13 @@ func (m *GlobalMiddleware) Protected(roleAccess []uint) fiber.Handler {
 				Role:       userRow.Role,
 				MerchantID: userRow.MerchantID,
 			}
+
+			conf := config.Get()
+			if userRow.Photo != nil {
+				photo := conf.AWS_S3_URL + "/" + *userRow.Photo
+				resp.Photo = &photo
+			}
+
 			// ----- set user to all request with protected
 			ctx.Context().SetUserValue("user", resp)
 			// ctx.Locals("user_profile", resp)
