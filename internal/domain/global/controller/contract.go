@@ -129,7 +129,7 @@ func (pc *GlobalController) Init() {
 	pc.v1.Get(AnalyticDashboard, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_FARMASI, role.ROLE_KASIR, role.ROLE_MARKETING, role.ROLE_MULTIMEDIA, role.ROLE_SUPER_ADMIN}), pc.handlerGetDashboardAnalytic)
 
 	// ----- Display dashboard
-	pc.v1.Get(DisplayDashboard, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_FARMASI, role.ROLE_KASIR, role.ROLE_MARKETING, role.ROLE_MULTIMEDIA, role.ROLE_SUPER_ADMIN}), pc.handlerDisplayQueue)
+	pc.v1.Get(DisplayDashboard, pc.handlerDisplayQueue)
 	pc.v1.Get(QueueBySearch+"/search", pc.handlerQueueBySearch)
 	pc.v1.Put(UpdateQueueFu, pc.handlerUpdateFollowUpPhone)
 

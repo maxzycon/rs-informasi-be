@@ -217,7 +217,6 @@ func (s *GlobalService) GetDashboardDisplay(ctx context.Context, payload *dto.Pa
 			TotalItem:     0,
 		},
 	}
-	user, _ := authutil.GetCredential(ctx)
 
 	if payload.Limit < 1 {
 		payload.Limit = 1
@@ -232,12 +231,6 @@ func (s *GlobalService) GetDashboardDisplay(ctx context.Context, payload *dto.Pa
 		squirrel.LtOrEq{
 			"COALESCE(TIMESTAMPDIFF(MINUTE, diterima.created_at, NOW()),0)": 5, // 5 menit
 		},
-	}
-
-	if user.MerchantID != nil {
-		cond = append(cond, squirrel.Eq{
-			"q.merchant_id": *user.MerchantID,
-		})
 	}
 
 	if merchantIdStr != "" {
