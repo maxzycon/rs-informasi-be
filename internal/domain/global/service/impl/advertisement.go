@@ -2,6 +2,7 @@ package impl
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/Masterminds/squirrel"
@@ -61,8 +62,8 @@ func (s *GlobalService) GetAdvertisementPaginated(ctx context.Context, payload *
 	}
 
 	if payload.Search != nil && *payload.Search != "" {
-		cond = append(cond, squirrel.Eq{
-			"a.name": payload.Search,
+		cond = append(cond, squirrel.Like{
+			"a.name": fmt.Sprintf("%%%s%%", *payload.Search),
 		})
 	}
 
@@ -326,6 +327,7 @@ func (s *GlobalService) GetAdvertisementById(ctx context.Context, id int) (resp 
 		CategoryAdvertisementID:   &row.AdvertisementCategoryID,
 		CategoryAdvertisementName: &row.AdvertisementCategory.Name,
 		Path:                      s.conf.AWS_S3_URL + "/" + row.DocumentPath,
+		Description:               row.Description,
 	}
 
 	d, err := row.DateEnd.Value()

@@ -82,7 +82,7 @@ func (r *UserRepository) DeleteUserById(ctx context.Context, id int) (resp *int6
 }
 
 func (r *UserRepository) GetUserByIdToken(ctx context.Context, userId uint) (resp *model.User, err error) {
-	tx := r.db.WithContext(ctx).First(&resp, userId)
+	tx := r.db.WithContext(ctx).Preload("Merchant").First(&resp, userId)
 	return resp, tx.Error
 }
 

@@ -227,16 +227,11 @@ func (s *GlobalService) GetDashboardDisplay(ctx context.Context, payload *dto.Pa
 	cond := squirrel.And{
 		squirrel.Eq{
 			"q.deleted_at": nil,
+			"m.id_str":     payload.MerchantIdStr,
 		},
 		squirrel.LtOrEq{
 			"COALESCE(TIMESTAMPDIFF(MINUTE, diterima.created_at, NOW()),0)": 5, // 5 menit
 		},
-	}
-
-	if merchantIdStr != "" {
-		cond = append(cond, squirrel.Eq{
-			"m.id_str": payload.MerchantIdStr,
-		})
 	}
 
 	if payload.Search != nil && *payload.Search != "" {

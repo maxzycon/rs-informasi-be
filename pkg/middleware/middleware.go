@@ -46,14 +46,20 @@ func (m *GlobalMiddleware) Protected(roleAccess []uint) fiber.Handler {
 			}
 
 			resp := &authutil.UserClaims{
-				ID:         userRow.ID,
-				Name:       userRow.Name,
-				Phone:      &userRow.Phone,
-				Username:   userRow.Username,
-				Email:      userRow.Email,
-				Photo:      userRow.Photo,
-				Role:       userRow.Role,
-				MerchantID: userRow.MerchantID,
+				ID:            userRow.ID,
+				Name:          userRow.Name,
+				Phone:         &userRow.Phone,
+				Username:      userRow.Username,
+				Email:         userRow.Email,
+				Photo:         userRow.Photo,
+				Role:          userRow.Role,
+				MerchantID:    userRow.MerchantID,
+				MerchantIDStr: nil,
+			}
+
+			if userRow.MerchantID != nil {
+				idStr := userRow.Merchant.IDStr
+				resp.MerchantIDStr = &idStr
 			}
 
 			conf := config.Get()

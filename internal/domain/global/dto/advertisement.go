@@ -24,6 +24,7 @@ type AdvertisementDetailRow struct {
 	CategoryAdvertisementID   *uint   `json:"category_advertisement_id"`
 	CategoryAdvertisementName *string `json:"category_advertisement_name"`
 	Path                      string  `json:"document_path"`
+	Description               *string `json:"description"`
 }
 
 type AdvertisementData struct {

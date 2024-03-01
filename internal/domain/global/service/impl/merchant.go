@@ -58,14 +58,14 @@ func (s *GlobalService) GetMerchantPaginated(ctx context.Context, payload *dto.P
 	}
 
 	if payload.Search != nil && *payload.Search != "" {
-		cond = append(cond, squirrel.Eq{
-			"m.name": payload.Search,
+		cond = append(cond, squirrel.Like{
+			"m.name": fmt.Sprintf("%%%s%%", *payload.Search),
 		})
 	}
 
 	// ---- get data merchant
 	getStr, argStr, err := squirrel.
-		Select("m.id, m.name, m.email, m.pic_name, m.phone, m.photo, m.address, m.merchant_category_id, mc.name, mc.id_str").
+		Select("m.id, m.name, m.email, m.pic_name, m.phone, m.photo, m.address, m.merchant_category_id, mc.name, m.id_str").
 		From("merchants m").
 		LeftJoin("merchant_categories mc ON mc.id = m.merchant_category_id").
 		Where(cond).
