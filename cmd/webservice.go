@@ -31,7 +31,7 @@ type InitWebserviceParam struct {
 
 func InitWebservice(params *InitWebserviceParam) {
 	app := fiber.New(fiber.Config{
-		BodyLimit: 100 * 1024 * 1024, // set 100MB
+		BodyLimit: 1000 * 1024 * 1024, // set 100MB
 	})
 
 	db, err := database.InitMariaDB(&database.InitMariaDBParams{
