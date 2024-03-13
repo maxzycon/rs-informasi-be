@@ -19,6 +19,16 @@ func (c *GlobalController) handlerGetAllLocationPluck(f *fiber.Ctx) (err error) 
 	return httputil.WriteSuccessResponse(f, resp)
 }
 
+func (c *GlobalController) handlerGetAllLocationUser(f *fiber.Ctx) (err error) {
+	resp, err := c.globalService.GetAllLocationByUser(f.Context())
+	if err != nil {
+		log.Errorf("err service at controller Location user:%+v", err)
+		return httputil.WriteErrorResponse(f, err)
+	}
+
+	return httputil.WriteSuccessResponse(f, resp)
+}
+
 func (c *GlobalController) handlerCreateLocation(f *fiber.Ctx) (err error) {
 	payload := dto.PayloadLocation{}
 	err = f.BodyParser(&payload)
@@ -28,6 +38,24 @@ func (c *GlobalController) handlerCreateLocation(f *fiber.Ctx) (err error) {
 		return httputil.WriteErrorResponse(f, err)
 	}
 	resp, err := c.globalService.CreateLocation(f.Context(), &payload)
+
+	if err != nil {
+		log.Errorf("err service at controller create Location :%+v", err)
+		return httputil.WriteErrorResponse(f, err)
+	}
+
+	return httputil.WriteSuccessResponseAffectedRow(f, resp)
+}
+
+func (c *GlobalController) handlerUpdateLocationUser(f *fiber.Ctx) (err error) {
+	payload := dto.WrapperUpdateLocationUser{}
+	err = f.BodyParser(&payload)
+	if err != nil {
+		err = errors.ErrBadRequest
+		log.Errorf("err parse body create Location")
+		return httputil.WriteErrorResponse(f, err)
+	}
+	resp, err := c.globalService.UpdateAllLocationByUser(f.Context(), &payload)
 
 	if err != nil {
 		log.Errorf("err service at controller create Location :%+v", err)

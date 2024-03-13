@@ -63,6 +63,14 @@ type Location struct {
 	Name string `gorm:"not null"`
 }
 
+type LocationUser struct {
+	Model
+	UserID     uint `gorm:"index:idx_user_id_location_id_unique,unique"`
+	User       User
+	LocationID uint `gorm:"index:idx_user_id_location_id_unique,unique"`
+	Location   Location
+}
+
 type Queue struct {
 	Model
 	LocationID   uint
