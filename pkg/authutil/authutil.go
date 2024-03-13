@@ -17,6 +17,7 @@ type UserClaims struct {
 	Photo         *string    `json:"photo"`
 	MerchantID    *uint      `json:"merchant_id"`
 	MerchantIDStr *uuid.UUID `json:"merchant_id_str"`
+	MerchantPhoto *string    `json:"merchant_photo"`
 	Role          uint       `json:"role"`
 }
 

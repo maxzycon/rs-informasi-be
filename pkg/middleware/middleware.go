@@ -57,12 +57,15 @@ func (m *GlobalMiddleware) Protected(roleAccess []uint) fiber.Handler {
 				MerchantIDStr: nil,
 			}
 
+			conf := config.Get()
+
 			if userRow.MerchantID != nil {
 				idStr := userRow.Merchant.IDStr
 				resp.MerchantIDStr = &idStr
+				merchantPhoto := conf.AWS_S3_URL + "/" + *userRow.Merchant.Photo
+				resp.MerchantPhoto = &merchantPhoto
 			}
 
-			conf := config.Get()
 			if userRow.Photo != nil {
 				photo := conf.AWS_S3_URL + "/" + *userRow.Photo
 				resp.Photo = &photo
