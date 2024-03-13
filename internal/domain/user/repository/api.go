@@ -14,7 +14,7 @@ type UserRepository interface {
 	FindByIdAndDepartmentId(ctx context.Context, id int, departmentId uint) (resp *model.User, err error)
 	FindUserByUsernameLogin(ctx context.Context, username string) (resp *model.User, err error)
 	FindUserByUsername(ctx context.Context, username string) (resp *model.User, err error)
-	FindAllUserPaginated(ctx context.Context, payload *pagination.DefaultPaginationPayload, claims *authutil.UserClaims) (resp pagination.DefaultPagination, err error)
+	FindAllUserPaginated(ctx context.Context, payload *pagination.DefaultPaginationPayload, claims *authutil.UserClaims, roleQuery int) (resp pagination.DefaultPagination, err error)
 	Create(ctx context.Context, payload *model.User) (resp *model.User, err error)
 	Update(ctx context.Context, payload *model.User, id int) (resp *model.User, err error)
 	DeleteUserById(ctx context.Context, id int) (resp *int64, err error)

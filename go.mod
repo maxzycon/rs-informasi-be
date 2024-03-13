@@ -20,12 +20,13 @@ require (
 
 require (
 	github.com/go-sql-driver/mysql v1.7.0 // indirect
+	github.com/golang-module/carbon/v2 v2.3.10 // indirect
 	github.com/lann/builder v0.0.0-20180802200727-47ae307949d0 // indirect
 	github.com/lann/ps v0.0.0-20150810152359-62de8c46ede0 // indirect
 	github.com/mikhail-bigun/fiberlogrus v0.1.3 // indirect
 	github.com/satori/go.uuid v1.2.0 // indirect
 	github.com/sirupsen/logrus v1.9.3 // indirect
-	github.com/stretchr/testify v1.8.2 // indirect
+	github.com/stretchr/testify v1.8.4 // indirect
 	gorm.io/datatypes v1.2.0 // indirect
 )
 

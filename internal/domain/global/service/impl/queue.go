@@ -8,11 +8,13 @@ import (
 
 	"github.com/Masterminds/squirrel"
 	"github.com/gofiber/fiber/v2/log"
+	"github.com/golang-module/carbon/v2"
 	"github.com/maxzycon/rs-farmasi-be/internal/domain/global/dto"
 	"github.com/maxzycon/rs-farmasi-be/pkg/authutil"
 	"github.com/maxzycon/rs-farmasi-be/pkg/constant/status"
 	typequeuedetail "github.com/maxzycon/rs-farmasi-be/pkg/constant/type_queue_detail"
 	"github.com/maxzycon/rs-farmasi-be/pkg/model"
+	"github.com/maxzycon/rs-farmasi-be/pkg/util/timeutil"
 	"gorm.io/gorm"
 )
 
@@ -458,12 +460,38 @@ func (s *GlobalService) UpdateStatusQueueById(ctx context.Context, id int, paylo
 
 		// ----- process default / extend
 		if payload.NewStatus == status.PROCESS {
+
+			var estEnd *time.Time
+			getStr, argStr, err := squirrel.Select(`COALESCE(lastExtend.end_queue, process.end_queue) as endTime`).
+				From("queues as q").
+				LeftJoin("(SELECT queue_id, status FROM queue_histories as c WHERE id = (SELECT MAX(qh.id) FROM queue_histories as qh WHERE qh.queue_id = c.queue_id))  as l ON l.queue_id = q.id").
+				LeftJoin("(SELECT * FROM queue_histories as c WHERE id = (SELECT MAX(qh.id) FROM queue_histories as qh WHERE qh.queue_id = c.queue_id AND qh.status = 2)) as process ON process.queue_id = q.id").
+				LeftJoin("(SELECT * FROM queue_histories as c WHERE id = (SELECT MAX(qh.id) FROM queue_histories as qh WHERE qh.queue_id = c.queue_id AND qh.status = 2 AND qh.type = 2)) as lastExtend ON lastExtend.queue_id = q.id").
+				Where(squirrel.Eq{
+					"q.id": id,
+				}).
+				ToSql()
+
+			if err != nil {
+				return err
+			}
+
+			s.db.Raw(getStr, argStr...).Row().Scan(&estEnd)
+
 			loc, _ := time.LoadLocation("Asia/Jakarta")
 			now := time.Now().In(loc)
-			end := now.Add(time.Minute * time.Duration(payload.Duration))
+			t := timeutil.ToString(now)
+			endTimeAddMinute := carbon.Parse(t, "Asia/Jakarta").AddMinutes(int(payload.Duration)).StdTime()
+
+			if estEnd != nil {
+				t = timeutil.ToString(*estEnd)
+				c := carbon.Parse(t).AddMinutes(int(payload.Duration)).StdTime()
+				endTimeAddMinute = c
+			}
+
 			queue.StartQueue = &now
 			queue.Duration = &payload.Duration
-			queue.EndQueue = &end
+			queue.EndQueue = &endTimeAddMinute
 		}
 
 		if err := tx.Create(queue).Error; err != nil {

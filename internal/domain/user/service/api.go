@@ -20,5 +20,5 @@ type UserService interface {
 	GetUserByUsername(ctx context.Context, username string) (resp *model.User, err error)
 	UpdateUser(ctx context.Context, payload dto.PayloadUpdateUser, id int, claims *authutil.UserClaims) (resp *model.User, err error)
 	CreateUser(ctx context.Context, payload dto.PayloadCreateUser, claims *authutil.UserClaims) (resp *model.User, err error)
-	GetUserPaginated(ctx context.Context, payload *pagination.DefaultPaginationPayload, claims *authutil.UserClaims) (resp pagination.DefaultPagination, err error)
+	GetUserPaginated(ctx context.Context, payload *pagination.DefaultPaginationPayload, claims *authutil.UserClaims, role int) (resp pagination.DefaultPagination, err error)
 }

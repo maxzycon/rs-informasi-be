@@ -111,7 +111,9 @@ func (c *usersController) handlerGetUsersPaginated(f *fiber.Ctx) (err error) {
 		return httputil.WriteErrorResponse(f, err)
 	}
 
-	resp, err := c.userService.GetUserPaginated(f.Context(), &payload, user)
+	role := f.QueryInt("role")
+
+	resp, err := c.userService.GetUserPaginated(f.Context(), &payload, user, role)
 
 	if err != nil {
 		log.Errorf("[user.go][handlerGetUsersPaginated] err service at repo :%+v", err)

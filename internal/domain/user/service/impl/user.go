@@ -94,8 +94,8 @@ func (s *UserService) CreateUser(ctx context.Context, payload dto.PayloadCreateU
 	return
 }
 
-func (s *UserService) GetUserPaginated(ctx context.Context, payload *pagination.DefaultPaginationPayload, claims *authutil.UserClaims) (resp pagination.DefaultPagination, err error) {
-	resp, err = s.UserRepository.FindAllUserPaginated(ctx, payload, claims)
+func (s *UserService) GetUserPaginated(ctx context.Context, payload *pagination.DefaultPaginationPayload, claims *authutil.UserClaims, role int) (resp pagination.DefaultPagination, err error) {
+	resp, err = s.UserRepository.FindAllUserPaginated(ctx, payload, claims, role)
 	if err != nil {
 		log.Errorf("[user.go][GetUserPaginated] err repository at service :%+v", err)
 		return

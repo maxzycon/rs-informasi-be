@@ -11,7 +11,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func (r *UserRepository) FindAllUserPaginated(ctx context.Context, payload *pagination.DefaultPaginationPayload, claims *authutil.UserClaims) (resp pagination.DefaultPagination, err error) {
+func (r *UserRepository) FindAllUserPaginated(ctx context.Context, payload *pagination.DefaultPaginationPayload, claims *authutil.UserClaims, roleQuery int) (resp pagination.DefaultPagination, err error) {
 	var users []*model.User = make([]*model.User, 0)
 	user, _ := authutil.GetCredential(ctx)
 	sql := r.db.WithContext(ctx)
@@ -31,6 +31,10 @@ func (r *UserRepository) FindAllUserPaginated(ctx context.Context, payload *pagi
 
 	if user.Role != role.ROLE_OWNER && user.Role != role.ROLE_MARKETING {
 		sql = sql.Where("merchant_id = ?", *user.MerchantID)
+	}
+
+	if roleQuery > 0 {
+		sql = sql.Where("role = ?", roleQuery)
 	}
 
 	sql.Scopes(payload.PaginationV2(&resp.Paginator)).Find(&users)
