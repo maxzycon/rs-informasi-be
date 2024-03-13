@@ -1,5 +1,7 @@
 package dto
 
+import uuid "github.com/satori/go.uuid"
+
 type AdvertisementRow struct {
 	ID                        uint    `json:"id"`
 	Name                      string  `json:"name"`
@@ -71,4 +73,10 @@ type AdvertisementContentWrapper struct {
 type AdvertisementListData struct {
 	ID  uint   `json:"id"`
 	URL string `json:"url"`
+}
+
+type AdvertisementMerchant struct {
+	IDStr uuid.UUID `json:"id"`
+	Name  string    `json:"name"`
+	Photo *string   `json:"photo"`
 }

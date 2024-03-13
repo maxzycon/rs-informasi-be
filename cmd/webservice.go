@@ -48,6 +48,7 @@ func InitWebservice(params *InitWebserviceParam) {
 		&model.QueueHistory{},
 		&model.AdvertisementCategory{},
 		&model.Advertisement{},
+		&model.LocationUser{},
 	)
 
 	if err != nil {

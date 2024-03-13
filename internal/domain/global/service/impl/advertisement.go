@@ -404,3 +404,24 @@ func (s *GlobalService) DeleteAdvertisementById(ctx context.Context, id int) (re
 	}
 	return
 }
+
+func (s *GlobalService) GetMerchantDetailAdvertisement(ctx context.Context, merchantIdStr string) (resp *dto.AdvertisementMerchant, err error) {
+
+	data := model.Merchant{}
+	err = s.db.Model(&model.Merchant{}).Where("id_str = ?", merchantIdStr).Find(&data).Error
+	if err != nil {
+		return
+	}
+
+	resp = &dto.AdvertisementMerchant{
+		IDStr: data.IDStr,
+		Name:  data.Name,
+	}
+
+	if data.Photo != nil {
+		merchantPhoto := s.conf.AWS_S3_URL + "/" + *data.Photo
+		resp.Photo = &merchantPhoto
+	}
+
+	return
+}

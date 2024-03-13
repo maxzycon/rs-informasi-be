@@ -12,6 +12,7 @@ const (
 	GetUserPluck = "/users_pluck"
 
 	GetLocationPluck     = "locations/list"
+	GetLocationUser      = "locations/user"
 	GetLocationPaginated = "locations/paginated"
 	Location             = "locations"
 	LocationById         = "locations/:id"
@@ -78,6 +79,8 @@ func (pc *GlobalController) Init() {
 
 	// ---- Location
 	pc.v1.Get(GetLocationPluck, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_FARMASI, role.ROLE_KASIR, role.ROLE_MARKETING, role.ROLE_MULTIMEDIA, role.ROLE_SUPER_ADMIN}), pc.handlerGetAllLocationPluck)
+	pc.v1.Get(GetLocationUser, pc.middleware.Protected([]uint{role.ROLE_SUPER_ADMIN}), pc.handlerGetAllLocationUser)
+	pc.v1.Put(GetLocationUser, pc.middleware.Protected([]uint{role.ROLE_SUPER_ADMIN}), pc.handlerUpdateLocationUser)
 	pc.v1.Get(GetLocationPaginated, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerGetLocationPaginated)
 	pc.v1.Get(LocationById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerGetLocationById)
 	pc.v1.Post(Location, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerCreateLocation)
@@ -135,6 +138,7 @@ func (pc *GlobalController) Init() {
 
 	// ----- Content
 	pc.v1.Get(AdvertisementContent, pc.handlerContentAdvertisement)
+	pc.v1.Get("advertisements/merchant/:id", pc.handlerMerchantAdvertisement)
 
 	pc.v1.Get(RunningText, pc.handlerGetRunningTextByMerchantIdStr)
 }

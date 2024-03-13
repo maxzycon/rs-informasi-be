@@ -129,3 +129,20 @@ func (c *GlobalController) handlerContentAdvertisement(f *fiber.Ctx) (err error)
 
 	return httputil.WriteSuccessResponse(f, resp)
 }
+
+func (c *GlobalController) handlerMerchantAdvertisement(f *fiber.Ctx) (err error) {
+	id := f.Params("id")
+	if id == "" {
+		err = errors.ErrBadRequest
+		log.Errorf("err parse params Advertisement delete by id")
+		return httputil.WriteErrorResponse(f, err)
+	}
+	resp, err := c.globalService.GetMerchantDetailAdvertisement(f.Context(), id)
+
+	if err != nil {
+		log.Errorf("err service at controller Advertisement delete by id :%+v", err)
+		return httputil.WriteErrorResponse(f, err)
+	}
+
+	return httputil.WriteSuccessResponse(f, resp)
+}

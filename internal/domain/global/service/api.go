@@ -16,8 +16,10 @@ type GlobalService interface {
 	GetLocationPaginated(ctx context.Context, payload *pagination.DefaultPaginationPayload) (resp pagination.DefaultPagination, err error)
 	GetLocationPluck(ctx context.Context) (resp []*dto.DefaultPluck, err error)
 	GetLocationById(ctx context.Context, id int) (resp *dto.LocationRow, err error)
+	GetAllLocationByUser(ctx context.Context) (resp []*dto.LocationUserRow, err error)
 	CreateLocation(ctx context.Context, payload *dto.PayloadLocation) (resp *int64, err error)
 	UpdateLocationById(ctx context.Context, id int, payload *dto.PayloadLocation) (resp *int64, err error)
+	UpdateAllLocationByUser(ctx context.Context, payload *dto.WrapperUpdateLocationUser) (resp *int64, err error)
 	DeleteLocationById(ctx context.Context, id int) (resp *int64, err error)
 
 	// ---- MerchantCategory
@@ -68,6 +70,7 @@ type GlobalService interface {
 
 	// ----- Dashboard queue
 	GetDashboardDisplay(ctx context.Context, payload *dto.ParamsQueueDisplay, merchantIdStr string) (resp *dto.QueueDataDisplayWrapper, err error)
+	GetMerchantDetailAdvertisement(ctx context.Context, merchantIdStr string) (resp *dto.AdvertisementMerchant, err error)
 
 	// ----- Get Queue detail by search
 	GetQueueBySearch(ctx context.Context, merchantId string, search string) (resp *dto.QueueUserSearch, err error)
