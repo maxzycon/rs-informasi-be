@@ -505,6 +505,22 @@ func (s *GlobalService) GetQueueById(ctx context.Context, id int) (resp *dto.Que
 		Type:          data.Type,
 	}
 
+	getStr, argStr, err := squirrel.Select(`COALESCE(lastExtend.end_queue, process.end_queue) as endTime`).
+		From("queues as q").
+		LeftJoin("(SELECT queue_id, status FROM queue_histories as c WHERE id = (SELECT MAX(qh.id) FROM queue_histories as qh WHERE qh.queue_id = c.queue_id))  as l ON l.queue_id = q.id").
+		LeftJoin("(SELECT * FROM queue_histories as c WHERE id = (SELECT MAX(qh.id) FROM queue_histories as qh WHERE qh.queue_id = c.queue_id AND qh.status = 2)) as process ON process.queue_id = q.id").
+		LeftJoin("(SELECT * FROM queue_histories as c WHERE id = (SELECT MAX(qh.id) FROM queue_histories as qh WHERE qh.queue_id = c.queue_id AND qh.status = 2 AND qh.type = 2)) as lastExtend ON lastExtend.queue_id = q.id").
+		Where(squirrel.Eq{
+			"q.id": data.ID,
+		}).
+		ToSql()
+
+	if err != nil {
+		return
+	}
+
+	s.db.Raw(getStr, argStr...).Row().Scan(&resp.EstEnd)
+
 	return
 }
 

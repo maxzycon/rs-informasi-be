@@ -33,11 +33,12 @@ type QueueRowPaginated struct {
 }
 
 type QueueRowDetail struct {
-	ID            uint   `json:"id"`
-	QueueNo       string `json:"queue_no"`
-	MedicalRecord string `json:"medical_record"`
-	LocationID    uint   `json:"location_id"`
-	Type          uint   `json:"type"`
+	ID            uint       `json:"id"`
+	QueueNo       string     `json:"queue_no"`
+	MedicalRecord string     `json:"medical_record"`
+	LocationID    uint       `json:"location_id"`
+	Type          uint       `json:"type"`
+	EstEnd        *time.Time `json:"est_end"`
 }
 
 type QueueWrapper struct {
