@@ -2,17 +2,16 @@ package controller
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/log"
-	"github.com/maxzycon/rs-farmasi-be/internal/domain/global/dto"
-	"github.com/maxzycon/rs-farmasi-be/pkg/errors"
-	"github.com/maxzycon/rs-farmasi-be/pkg/httputil"
-	"github.com/maxzycon/rs-farmasi-be/pkg/util/pagination"
+	"github.com/maxzycon/rs-informasi-be/internal/domain/global/dto"
+	"github.com/maxzycon/rs-informasi-be/pkg/errors"
+	"github.com/maxzycon/rs-informasi-be/pkg/httputil"
+	"github.com/maxzycon/rs-informasi-be/pkg/util/pagination"
 )
 
 func (c *GlobalController) handlerGetAllMerchantCategoryPluck(f *fiber.Ctx) (err error) {
 	resp, err := c.globalService.GetMerchantCategoryPluck(f.Context())
 	if err != nil {
-		log.Errorf("err service at controller MerchantCategory pluck :%+v", err)
+		c.log.Errorf("err service at controller MerchantCategory pluck :%+v", err)
 		return httputil.WriteErrorResponse(f, err)
 	}
 
@@ -24,13 +23,13 @@ func (c *GlobalController) handlerCreateMerchantCategory(f *fiber.Ctx) (err erro
 	err = f.BodyParser(&payload)
 	if err != nil {
 		err = errors.ErrBadRequest
-		log.Errorf("err parse body create MerchantCategory")
+		c.log.Errorf("err parse body create MerchantCategory")
 		return httputil.WriteErrorResponse(f, err)
 	}
 	resp, err := c.globalService.CreateMerchantCategory(f.Context(), &payload)
 
 	if err != nil {
-		log.Errorf("err service at controller create MerchantCategory :%+v", err)
+		c.log.Errorf("err service at controller create MerchantCategory :%+v", err)
 		return httputil.WriteErrorResponse(f, err)
 	}
 
@@ -41,7 +40,7 @@ func (c *GlobalController) handlerUpdateMerchantCategory(f *fiber.Ctx) (err erro
 	id, err := f.ParamsInt("id")
 	if err != nil {
 		err = errors.ErrBadRequest
-		log.Errorf("err parse params update MerchantCategory")
+		c.log.Errorf("err parse params update MerchantCategory")
 		return httputil.WriteErrorResponse(f, err)
 	}
 
@@ -49,13 +48,13 @@ func (c *GlobalController) handlerUpdateMerchantCategory(f *fiber.Ctx) (err erro
 	err = f.BodyParser(&payload)
 	if err != nil {
 		err = errors.ErrBadRequest
-		log.Errorf("err parse body update MerchantCategory")
+		c.log.Errorf("err parse body update MerchantCategory")
 		return httputil.WriteErrorResponse(f, err)
 	}
 	resp, err := c.globalService.UpdateMerchantCategoryById(f.Context(), id, &payload)
 
 	if err != nil {
-		log.Errorf("err service at controller update MerchantCategory :%+v", err)
+		c.log.Errorf("err service at controller update MerchantCategory :%+v", err)
 		return httputil.WriteErrorResponse(f, err)
 	}
 
@@ -67,13 +66,13 @@ func (c *GlobalController) handlerGetMerchantCategoryPaginated(f *fiber.Ctx) (er
 	err = f.QueryParser(&payload)
 	if err != nil {
 		err = errors.ErrBadRequest
-		log.Errorf("err parse body paginated MerchantCategory")
+		c.log.Errorf("err parse body paginated MerchantCategory")
 		return httputil.WriteErrorResponse(f, err)
 	}
 	resp, err := c.globalService.GetMerchantCategoryPaginated(f.Context(), &payload)
 
 	if err != nil {
-		log.Errorf("err service at controller paginated MerchantCategory :%+v", err)
+		c.log.Errorf("err service at controller paginated MerchantCategory :%+v", err)
 		return httputil.WriteErrorResponse(f, err)
 	}
 
@@ -84,13 +83,13 @@ func (c *GlobalController) handlerGetMerchantCategoryById(f *fiber.Ctx) (err err
 	id, err := f.ParamsInt("id")
 	if err != nil {
 		err = errors.ErrBadRequest
-		log.Errorf("err parse params MerchantCategory get by id")
+		c.log.Errorf("err parse params MerchantCategory get by id")
 		return httputil.WriteErrorResponse(f, err)
 	}
 	resp, err := c.globalService.GetMerchantCategoryById(f.Context(), id)
 
 	if err != nil {
-		log.Errorf("err service at controller MerchantCategory get by id:%+v", err)
+		c.log.Errorf("err service at controller MerchantCategory get by id:%+v", err)
 		return httputil.WriteErrorResponse(f, err)
 	}
 
@@ -101,13 +100,13 @@ func (c *GlobalController) handlerDeleteMerchantCategory(f *fiber.Ctx) (err erro
 	id, err := f.ParamsInt("id")
 	if err != nil {
 		err = errors.ErrBadRequest
-		log.Errorf("err parse params MerchantCategory delete by id")
+		c.log.Errorf("err parse params MerchantCategory delete by id")
 		return httputil.WriteErrorResponse(f, err)
 	}
 	resp, err := c.globalService.DeleteMerchantCategoryById(f.Context(), id)
 
 	if err != nil {
-		log.Errorf("err service at controller MerchantCategory delete by id :%+v", err)
+		c.log.Errorf("err service at controller MerchantCategory delete by id :%+v", err)
 		return httputil.WriteErrorResponse(f, err)
 	}
 

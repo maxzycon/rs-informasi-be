@@ -4,24 +4,24 @@ import (
 	"fmt"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/log"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/monitor"
 	"github.com/gofiber/fiber/v2/middleware/recover"
-	"github.com/maxzycon/rs-farmasi-be/internal/config"
-	S3Controller "github.com/maxzycon/rs-farmasi-be/internal/domain/s3/controller"
-	S3Repository "github.com/maxzycon/rs-farmasi-be/internal/domain/s3/repository/impl"
-	S3Service "github.com/maxzycon/rs-farmasi-be/internal/domain/s3/service/impl"
-	UserController "github.com/maxzycon/rs-farmasi-be/internal/domain/user/controller"
-	UserRepository "github.com/maxzycon/rs-farmasi-be/internal/domain/user/repository/impl"
-	UserService "github.com/maxzycon/rs-farmasi-be/internal/domain/user/service/impl"
-	"github.com/maxzycon/rs-farmasi-be/pkg/database"
-	middleware2 "github.com/maxzycon/rs-farmasi-be/pkg/middleware"
-	"github.com/maxzycon/rs-farmasi-be/pkg/model"
+	"github.com/maxzycon/rs-informasi-be/internal/config"
+	S3Controller "github.com/maxzycon/rs-informasi-be/internal/domain/s3/controller"
+	S3Repository "github.com/maxzycon/rs-informasi-be/internal/domain/s3/repository/impl"
+	S3Service "github.com/maxzycon/rs-informasi-be/internal/domain/s3/service/impl"
+	UserController "github.com/maxzycon/rs-informasi-be/internal/domain/user/controller"
+	UserRepository "github.com/maxzycon/rs-informasi-be/internal/domain/user/repository/impl"
+	UserService "github.com/maxzycon/rs-informasi-be/internal/domain/user/service/impl"
+	"github.com/maxzycon/rs-informasi-be/pkg/database"
+	middleware2 "github.com/maxzycon/rs-informasi-be/pkg/middleware"
+	"github.com/maxzycon/rs-informasi-be/pkg/model"
+	"github.com/sirupsen/logrus"
 
-	GlobalController "github.com/maxzycon/rs-farmasi-be/internal/domain/global/controller"
-	GlobalRepository "github.com/maxzycon/rs-farmasi-be/internal/domain/global/repository/impl"
-	GlobalService "github.com/maxzycon/rs-farmasi-be/internal/domain/global/service/impl"
+	GlobalController "github.com/maxzycon/rs-informasi-be/internal/domain/global/controller"
+	GlobalRepository "github.com/maxzycon/rs-informasi-be/internal/domain/global/repository/impl"
+	GlobalService "github.com/maxzycon/rs-informasi-be/internal/domain/global/service/impl"
 	"github.com/mikhail-bigun/fiberlogrus"
 )
 
@@ -38,17 +38,31 @@ func InitWebservice(params *InitWebserviceParam) {
 		Conf: &params.Conf.MariaDBConfig,
 	})
 
+	log := logrus.New()
+	log.SetReportCaller(true)
+
 	db.AutoMigrate(
 		// --- global
 		&model.User{},
-		&model.Location{},
 		&model.Merchant{},
 		&model.MerchantCategory{},
-		&model.Queue{},
-		&model.QueueHistory{},
+		&model.Floor{},
+		&model.Facility{},
+		&model.Services{},
+		&model.ProductCategory{},
+		&model.Product{},
+		&model.DetailProduct{},
+		&model.InformationCategory{},
+		&model.Information{},
+		&model.Specialization{},
+		&model.Doctor{},
+		&model.DoctorEducation{},
+		&model.DoctorSkill{},
+		&model.DoctorSlot{},
 		&model.AdvertisementCategory{},
 		&model.Advertisement{},
-		&model.LocationUser{},
+		&model.Organ{},
+		&model.LogsPage{},
 	)
 
 	if err != nil {
@@ -58,7 +72,7 @@ func InitWebservice(params *InitWebserviceParam) {
 
 	app.Use(cors.New(cors.Config{
 		AllowCredentials: true,
-		AllowOrigins:     "*, https://rs.devku.xyz",
+		AllowOrigins:     "*, https://information.devku.xyz",
 		AllowOriginsFunc: func(origin string) bool {
 			return params.Conf.ENVIRONMENT == "dev"
 		},
@@ -123,6 +137,7 @@ func InitWebservice(params *InitWebserviceParam) {
 	globalRepository := GlobalRepository.New(&GlobalRepository.NewGlobalRepository{
 		Conf: params.Conf,
 		Db:   db,
+		Log:  log,
 	})
 
 	globalService := GlobalService.New(&GlobalService.NewGlobalServiceParams{
@@ -130,6 +145,7 @@ func InitWebservice(params *InitWebserviceParam) {
 		GlobalRepository: globalRepository,
 		S3Service:        s3Service,
 		Db:               db,
+		Log:              log,
 	})
 
 	globalController := GlobalController.New(&GlobalController.GlobalControllerParams{
@@ -137,6 +153,7 @@ func InitWebservice(params *InitWebserviceParam) {
 		Conf:          params.Conf,
 		GlobalService: globalService,
 		Middleware:    middleware,
+		Log:           log,
 	})
 
 	userController.Init()

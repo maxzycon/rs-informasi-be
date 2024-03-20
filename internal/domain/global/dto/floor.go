@@ -1,24 +1,24 @@
 package dto
 
-type LocationRow struct {
+type FloorRow struct {
 	ID   uint   `json:"id"`
 	Name string `json:"name"`
 }
 
-type LocationUserRow struct {
+type FloorUserRow struct {
 	ID     uint   `json:"id"`
 	Name   string `json:"name"`
 	IsUsed bool   `json:"is_used"`
 }
 
-type PayloadLocation struct {
+type PayloadFloor struct {
 	Name string `json:"name"`
 }
 
-type WrapperUpdateLocationUser struct {
-	Data []*PayloadLocationUser `json:"data"`
+type WrapperUpdateFloorUser struct {
+	Data []*PayloadFloorUser `json:"data"`
 }
 
-type PayloadLocationUser struct {
+type PayloadFloorUser struct {
 	ID uint `json:"id"`
 }

@@ -3,7 +3,7 @@ package jsonutil
 import (
 	"encoding/json"
 
-	"github.com/maxzycon/rs-farmasi-be/pkg/errors"
+	"github.com/maxzycon/rs-informasi-be/pkg/errors"
 )
 
 func ConvertToJSONString(i interface{}) (jsonString string, err error) {

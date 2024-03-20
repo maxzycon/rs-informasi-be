@@ -2,8 +2,8 @@ package controller
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/maxzycon/rs-farmasi-be/internal/config"
-	"github.com/maxzycon/rs-farmasi-be/internal/domain/s3/service"
+	"github.com/maxzycon/rs-informasi-be/internal/config"
+	"github.com/maxzycon/rs-informasi-be/internal/domain/s3/service"
 )
 
 const (

@@ -5,15 +5,15 @@ import (
 	"strings"
 	"time"
 
-	"github.com/maxzycon/rs-farmasi-be/pkg/authutil"
+	"github.com/maxzycon/rs-informasi-be/pkg/authutil"
 
 	"github.com/gofiber/fiber/v2/log"
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/maxzycon/rs-farmasi-be/internal/domain/user/dto"
-	"github.com/maxzycon/rs-farmasi-be/pkg/errors"
-	"github.com/maxzycon/rs-farmasi-be/pkg/helper"
-	"github.com/maxzycon/rs-farmasi-be/pkg/model"
-	"github.com/maxzycon/rs-farmasi-be/pkg/util/pagination"
+	"github.com/maxzycon/rs-informasi-be/internal/domain/user/dto"
+	"github.com/maxzycon/rs-informasi-be/pkg/errors"
+	"github.com/maxzycon/rs-informasi-be/pkg/helper"
+	"github.com/maxzycon/rs-informasi-be/pkg/model"
+	"github.com/maxzycon/rs-informasi-be/pkg/util/pagination"
 )
 
 func (s *UserService) Login(ctx context.Context, payload dto.PayloadLogin) (resp *dto.LoginRes, err error) {

@@ -1,8 +1,8 @@
 package impl
 
 import (
-	"github.com/maxzycon/rs-farmasi-be/internal/config"
-	"github.com/maxzycon/rs-farmasi-be/internal/domain/user/repository"
+	"github.com/maxzycon/rs-informasi-be/internal/config"
+	"github.com/maxzycon/rs-informasi-be/internal/domain/user/repository"
 )
 
 type NewUserServiceParams struct {

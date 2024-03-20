@@ -3,16 +3,15 @@ package impl
 import (
 	"context"
 
-	"github.com/gofiber/fiber/v2/log"
-	"github.com/maxzycon/rs-farmasi-be/internal/domain/global/dto"
-	"github.com/maxzycon/rs-farmasi-be/pkg/model"
-	"github.com/maxzycon/rs-farmasi-be/pkg/util/pagination"
+	"github.com/maxzycon/rs-informasi-be/internal/domain/global/dto"
+	"github.com/maxzycon/rs-informasi-be/pkg/model"
+	"github.com/maxzycon/rs-informasi-be/pkg/util/pagination"
 )
 
 func (s *GlobalService) GetAdvertisementCategoryPaginated(ctx context.Context, payload *pagination.DefaultPaginationPayload) (resp pagination.DefaultPagination, err error) {
 	resp, err = s.globalRepository.FindAdvertisementCategoryPaginated(ctx, payload)
 	if err != nil {
-		log.Errorf("err get AdvertisementCategory paginated")
+		s.log.Errorf("err get AdvertisementCategory paginated")
 		return
 	}
 
@@ -34,7 +33,7 @@ func (s *GlobalService) GetAdvertisementCategoryPaginated(ctx context.Context, p
 func (s *GlobalService) GetAdvertisementCategoryPluck(ctx context.Context) (resp []*dto.DefaultPluck, err error) {
 	rows, err := s.globalRepository.FindAllAdvertisementCategory(ctx)
 	if err != nil {
-		log.Errorf("err get AdvertisementCategory paginated")
+		s.log.Errorf("err get AdvertisementCategory paginated")
 		return
 	}
 	resp = make([]*dto.DefaultPluck, 0)
@@ -50,7 +49,7 @@ func (s *GlobalService) GetAdvertisementCategoryPluck(ctx context.Context) (resp
 func (s *GlobalService) GetAdvertisementCategoryById(ctx context.Context, id int) (resp *dto.AdvertisementCategoryRow, err error) {
 	row, err := s.globalRepository.FindAdvertisementCategoryById(ctx, id)
 	if err != nil {
-		log.Errorf("err get AdvertisementCategory paginated")
+		s.log.Errorf("err get AdvertisementCategory paginated")
 		return
 	}
 	resp = &dto.AdvertisementCategoryRow{
@@ -67,7 +66,7 @@ func (s *GlobalService) CreateAdvertisementCategory(ctx context.Context, payload
 		Description: payload.Description,
 	})
 	if err != nil {
-		log.Errorf("err AdvertisementCategory status")
+		s.log.Errorf("err AdvertisementCategory status")
 		return
 	}
 	return
@@ -79,7 +78,7 @@ func (s *GlobalService) UpdateAdvertisementCategoryById(ctx context.Context, id 
 		Description: payload.Description,
 	})
 	if err != nil {
-		log.Errorf("err update AdvertisementCategory %d", id)
+		s.log.Errorf("err update AdvertisementCategory %d", id)
 		return
 	}
 	return
@@ -88,7 +87,7 @@ func (s *GlobalService) UpdateAdvertisementCategoryById(ctx context.Context, id 
 func (s *GlobalService) DeleteAdvertisementCategoryById(ctx context.Context, id int) (resp *int64, err error) {
 	resp, err = s.globalRepository.DeleteAdvertisementCategoryById(ctx, id)
 	if err != nil {
-		log.Errorf("err delete AdvertisementCategory %d", id)
+		s.log.Errorf("err delete AdvertisementCategory %d", id)
 		return
 	}
 	return

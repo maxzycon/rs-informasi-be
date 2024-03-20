@@ -2,20 +2,61 @@ package controller
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/maxzycon/rs-farmasi-be/internal/config"
-	"github.com/maxzycon/rs-farmasi-be/internal/domain/global/service"
-	"github.com/maxzycon/rs-farmasi-be/pkg/constant/role"
-	"github.com/maxzycon/rs-farmasi-be/pkg/middleware"
+	"github.com/maxzycon/rs-informasi-be/internal/config"
+	"github.com/maxzycon/rs-informasi-be/internal/domain/global/service"
+	"github.com/maxzycon/rs-informasi-be/pkg/constant/role"
+	"github.com/maxzycon/rs-informasi-be/pkg/middleware"
+	"github.com/sirupsen/logrus"
 )
 
 const (
 	GetUserPluck = "/users_pluck"
 
-	GetLocationPluck     = "locations/list"
-	GetLocationUser      = "locations/user"
-	GetLocationPaginated = "locations/paginated"
-	Location             = "locations"
-	LocationById         = "locations/:id"
+	GetFloorPluck     = "floors/list"
+	GetFloorUser      = "floors/user"
+	GetFloorPaginated = "floors/paginated"
+	Floor             = "floors"
+	FloorById         = "floors/:id"
+
+	GetFacilityPluck     = "facilities/list"
+	GetFacilityPaginated = "facilities/paginated"
+	Facility             = "facilities"
+	FacilityById         = "facilities/:id"
+
+	GetInformationCategoryPluck     = "information_categories/list"
+	GetInformationCategoryPaginated = "information_categories/paginated"
+	InformationCategory             = "information_categories"
+	InformationCategoryById         = "information_categories/:id"
+
+	GetProductCategoryPluck     = "product_categories/list"
+	GetProductCategoryPaginated = "product_categories/paginated"
+	ProductCategory             = "product_categories"
+	ProductCategoryById         = "product_categories/:id"
+
+	GetOrganPluck     = "organs/list"
+	GetOrganPaginated = "organs/paginated"
+	Organ             = "organs"
+	OrganById         = "organs/:id"
+
+	GetServicePluck     = "services/list"
+	GetServicePaginated = "services/paginated"
+	Service             = "services"
+	ServiceById         = "services/:id"
+
+	GetInformationPluck     = "informations/list"
+	GetInformationPaginated = "informations/paginated"
+	Information             = "informations"
+	InformationById         = "informations/:id"
+
+	GetProductPluck     = "products/list"
+	GetProductPaginated = "products/paginated"
+	Product             = "products"
+	ProductById         = "products/:id"
+
+	GetDoctorPluck     = "doctors/list"
+	GetDoctorPaginated = "doctors/paginated"
+	Doctor             = "doctors"
+	DoctorById         = "doctors/:id"
 
 	GetMerchantCategoryPluck     = "merchant_categories/list"
 	GetMerchantCategoryPaginated = "merchant_categories/paginated"
@@ -39,13 +80,6 @@ const (
 	AdvertisementContent      = "advertisements/content/:id"
 	AdvertisementById         = "advertisements/:id"
 
-	GetQueuePaginated = "queues/paginated"
-	Queue             = "queues"
-	QueueById         = "queues/:id"
-	QueueBySearch     = "queues/detail"
-	UpdateQueueFu     = "queues/fu/:id"
-	QueueStatusById   = "queues/status/:id"
-
 	AnalyticDashboard = "analytic/dashboard"
 	DisplayDashboard  = "dashboard"
 	RunningText       = "running_text/:id"
@@ -56,12 +90,14 @@ type GlobalControllerParams struct {
 	Conf          *config.Config
 	GlobalService service.GlobalService
 	Middleware    middleware.GlobalMiddleware
+	Log           *logrus.Logger
 }
 type GlobalController struct {
 	v1            fiber.Router
 	conf          *config.Config
 	globalService service.GlobalService
 	middleware    middleware.GlobalMiddleware
+	log           *logrus.Logger
 }
 
 func New(params *GlobalControllerParams) *GlobalController {
@@ -70,6 +106,7 @@ func New(params *GlobalControllerParams) *GlobalController {
 		conf:          params.Conf,
 		globalService: params.GlobalService,
 		middleware:    params.Middleware,
+		log:           params.Log,
 	}
 }
 
@@ -77,18 +114,81 @@ func (pc *GlobalController) Init() {
 	// ---- User
 	pc.v1.Get(GetUserPluck, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_FARMASI, role.ROLE_KASIR, role.ROLE_MARKETING, role.ROLE_MULTIMEDIA, role.ROLE_SUPER_ADMIN}), pc.handlerGetAllUserPluck)
 
-	// ---- Location
-	pc.v1.Get(GetLocationPluck, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_FARMASI, role.ROLE_KASIR, role.ROLE_MARKETING, role.ROLE_MULTIMEDIA, role.ROLE_SUPER_ADMIN}), pc.handlerGetAllLocationPluck)
-	pc.v1.Get(GetLocationUser, pc.middleware.Protected([]uint{role.ROLE_SUPER_ADMIN}), pc.handlerGetAllLocationUser)
-	pc.v1.Put(GetLocationUser, pc.middleware.Protected([]uint{role.ROLE_SUPER_ADMIN}), pc.handlerUpdateLocationUser)
-	pc.v1.Get(GetLocationPaginated, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerGetLocationPaginated)
-	pc.v1.Get(LocationById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerGetLocationById)
-	pc.v1.Post(Location, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerCreateLocation)
-	pc.v1.Put(LocationById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerUpdateLocation)
-	pc.v1.Delete(LocationById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerDeleteLocation)
+	// ---- Floor
+	pc.v1.Get(GetFloorPluck, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerGetAllFloorPluck)
+	pc.v1.Get(GetFloorUser, pc.middleware.Protected([]uint{role.ROLE_SUPER_ADMIN}), pc.handlerGetAllFloorUser)
+	pc.v1.Get(GetFloorPaginated, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerGetFloorPaginated)
+	pc.v1.Get(FloorById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerGetFloorById)
+	pc.v1.Post(Floor, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerCreateFloor)
+	pc.v1.Put(FloorById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerUpdateFloor)
+	pc.v1.Delete(FloorById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerDeleteFloor)
+
+	// ---- Facility
+	pc.v1.Get(GetFacilityPluck, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerGetAllFacilityPluck)
+	pc.v1.Get(GetFacilityPaginated, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerGetFacilityPaginated)
+	pc.v1.Get(FacilityById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerGetFacilityById)
+	pc.v1.Post(Facility, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerCreateFacility)
+	pc.v1.Put(FacilityById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerUpdateFacility)
+	pc.v1.Delete(FacilityById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerDeleteFacility)
+
+	// ---- Information categories
+	pc.v1.Get(GetInformationCategoryPluck, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerGetAllInformationCategoryPluck)
+	pc.v1.Get(GetInformationCategoryPaginated, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerGetInformationCategoryPaginated)
+	pc.v1.Get(InformationCategoryById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerGetInformationCategoryById)
+	pc.v1.Post(InformationCategory, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerCreateInformationCategory)
+	pc.v1.Put(InformationCategoryById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerUpdateInformationCategory)
+	pc.v1.Delete(InformationCategoryById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerDeleteInformationCategory)
+
+	// ---- Product categories
+	pc.v1.Get(GetProductCategoryPluck, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerGetAllProductCategoryPluck)
+	pc.v1.Get(GetProductCategoryPaginated, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerGetProductCategoryPaginated)
+	pc.v1.Get(ProductCategoryById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerGetProductCategoryById)
+	pc.v1.Post(ProductCategory, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerCreateProductCategory)
+	pc.v1.Put(ProductCategoryById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerUpdateProductCategory)
+	pc.v1.Delete(ProductCategoryById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerDeleteProductCategory)
+
+	// ---- Organs
+	pc.v1.Get(GetOrganPluck, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerGetAllOrganPluck)
+	pc.v1.Get(GetOrganPaginated, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerGetOrganPaginated)
+	pc.v1.Get(OrganById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerGetOrganById)
+	pc.v1.Post(Organ, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerCreateOrgan)
+	pc.v1.Put(OrganById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerUpdateOrgan)
+	pc.v1.Delete(OrganById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerDeleteOrgan)
+
+	// ---- Services
+	pc.v1.Get(GetServicePluck, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerGetAllServicePluck)
+	pc.v1.Get(GetServicePaginated, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerGetServicePaginated)
+	pc.v1.Get(ServiceById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerGetServiceById)
+	pc.v1.Post(Service, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerCreateService)
+	pc.v1.Put(ServiceById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerUpdateService)
+	pc.v1.Delete(ServiceById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerDeleteService)
+
+	// ---- Information
+	pc.v1.Get(GetInformationPluck, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerGetAllInformationPluck)
+	pc.v1.Get(GetInformationPaginated, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerGetInformationPaginated)
+	pc.v1.Get(InformationById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerGetInformationById)
+	pc.v1.Post(Information, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerCreateInformation)
+	pc.v1.Put(InformationById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerUpdateInformation)
+	pc.v1.Delete(InformationById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerDeleteInformation)
+
+	// ---- Product
+	pc.v1.Get(GetProductPluck, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerGetAllProductPluck)
+	pc.v1.Get(GetProductPaginated, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerGetProductPaginated)
+	pc.v1.Get(ProductById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerGetProductById)
+	pc.v1.Post(Product, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerCreateProduct)
+	pc.v1.Put(ProductById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerUpdateProduct)
+	pc.v1.Delete(ProductById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerDeleteProduct)
+
+	// ---- Doctors
+	pc.v1.Get(GetDoctorPluck, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerGetAllDoctorPluck)
+	pc.v1.Get(GetDoctorPaginated, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerGetDoctorPaginated)
+	pc.v1.Get(DoctorById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerGetDoctorById)
+	pc.v1.Post(Doctor, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerCreateDoctor)
+	pc.v1.Put(DoctorById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerUpdateDoctor)
+	pc.v1.Delete(DoctorById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerDeleteDoctor)
 
 	// ---- MerchantCategory
-	pc.v1.Get(GetMerchantCategoryPluck, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_FARMASI, role.ROLE_KASIR, role.ROLE_MARKETING, role.ROLE_MULTIMEDIA, role.ROLE_SUPER_ADMIN}), pc.handlerGetAllMerchantCategoryPluck)
+	pc.v1.Get(GetMerchantCategoryPluck, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerGetAllMerchantCategoryPluck)
 	pc.v1.Get(GetMerchantCategoryPaginated, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_MARKETING}), pc.handlerGetMerchantCategoryPaginated)
 	pc.v1.Get(MerchantCategoryById, pc.middleware.Protected([]uint{role.ROLE_OWNER}), pc.handlerGetMerchantCategoryById)
 	pc.v1.Post(MerchantCategory, pc.middleware.Protected([]uint{role.ROLE_OWNER}), pc.handlerCreateMerchantCategory)
@@ -96,7 +196,7 @@ func (pc *GlobalController) Init() {
 	pc.v1.Delete(MerchantCategoryById, pc.middleware.Protected([]uint{role.ROLE_OWNER}), pc.handlerDeleteMerchantCategory)
 
 	// ---- Merchant
-	pc.v1.Get(GetMerchantPluck, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_FARMASI, role.ROLE_KASIR, role.ROLE_MARKETING, role.ROLE_MULTIMEDIA, role.ROLE_SUPER_ADMIN}), pc.handlerGetAllMerchantPluck)
+	pc.v1.Get(GetMerchantPluck, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerGetAllMerchantPluck)
 	pc.v1.Get(GetMerchantPaginated, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_MARKETING}), pc.handlerGetMerchantPaginated)
 	pc.v1.Get(MerchantById, pc.middleware.Protected([]uint{role.ROLE_OWNER}), pc.handlerGetMerchantById)
 	pc.v1.Post(Merchant, pc.middleware.Protected([]uint{role.ROLE_OWNER}), pc.handlerCreateMerchant)
@@ -105,7 +205,7 @@ func (pc *GlobalController) Init() {
 	pc.v1.Delete(MerchantById, pc.middleware.Protected([]uint{role.ROLE_OWNER}), pc.handlerDeleteMerchant)
 
 	// ---- AdvertisementCategory
-	pc.v1.Get(GetAdvertisementCategoryPluck, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_FARMASI, role.ROLE_KASIR, role.ROLE_MARKETING, role.ROLE_MULTIMEDIA, role.ROLE_SUPER_ADMIN}), pc.handlerGetAllAdvertisementCategoryPluck)
+	pc.v1.Get(GetAdvertisementCategoryPluck, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerGetAllAdvertisementCategoryPluck)
 	pc.v1.Get(GetAdvertisementCategoryPaginated, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_MARKETING}), pc.handlerGetAdvertisementCategoryPaginated)
 	pc.v1.Get(AdvertisementCategoryById, pc.middleware.Protected([]uint{role.ROLE_OWNER}), pc.handlerGetAdvertisementCategoryById)
 	pc.v1.Post(AdvertisementCategory, pc.middleware.Protected([]uint{role.ROLE_OWNER}), pc.handlerCreateAdvertisementCategory)
@@ -113,28 +213,15 @@ func (pc *GlobalController) Init() {
 	pc.v1.Delete(AdvertisementCategoryById, pc.middleware.Protected([]uint{role.ROLE_OWNER}), pc.handlerDeleteAdvertisementCategory)
 
 	// ---- Advertisement
-	pc.v1.Get(GetAdvertisementPluck, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_FARMASI, role.ROLE_KASIR, role.ROLE_MARKETING, role.ROLE_MULTIMEDIA, role.ROLE_SUPER_ADMIN}), pc.handlerGetAllAdvertisementPluck)
+	pc.v1.Get(GetAdvertisementPluck, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerGetAllAdvertisementPluck)
 	pc.v1.Get(GetAdvertisementPaginated, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_MARKETING, role.ROLE_MULTIMEDIA}), pc.handlerGetAdvertisementPaginated)
 	pc.v1.Get(AdvertisementById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_MARKETING, role.ROLE_MULTIMEDIA}), pc.handlerGetAdvertisementById)
 	pc.v1.Post(Advertisement, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_MARKETING, role.ROLE_MULTIMEDIA}), pc.handlerCreateAdvertisement)
 	pc.v1.Put(AdvertisementById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_MARKETING, role.ROLE_MULTIMEDIA}), pc.handlerUpdateAdvertisement)
 	pc.v1.Delete(AdvertisementById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_MARKETING, role.ROLE_MULTIMEDIA}), pc.handlerDeleteAdvertisement)
 
-	// ----- Queue
-	pc.v1.Get(GetQueuePaginated, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN, role.ROLE_KASIR, role.ROLE_FARMASI}), pc.handlerGetQueuePaginated)
-	pc.v1.Get(QueueById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN, role.ROLE_KASIR, role.ROLE_FARMASI}), pc.handlerGetQueueById)
-	pc.v1.Post(Queue, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN, role.ROLE_KASIR}), pc.handlerCreateQueue)
-	pc.v1.Put(QueueStatusById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN, role.ROLE_KASIR, role.ROLE_FARMASI}), pc.handlerUpdateStatusQueue)
-	pc.v1.Put(QueueById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN, role.ROLE_KASIR, role.ROLE_FARMASI}), pc.handlerUpdateQueueById)
-	pc.v1.Delete(QueueById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN, role.ROLE_KASIR, role.ROLE_FARMASI}), pc.handlerDeleteQueue)
-
 	// ----- Analytic
-	pc.v1.Get(AnalyticDashboard, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_FARMASI, role.ROLE_KASIR, role.ROLE_MARKETING, role.ROLE_MULTIMEDIA, role.ROLE_SUPER_ADMIN}), pc.handlerGetDashboardAnalytic)
-
-	// ----- Display dashboard
-	pc.v1.Get(DisplayDashboard, pc.handlerDisplayQueue)
-	pc.v1.Get(QueueBySearch+"/search", pc.handlerQueueBySearch)
-	pc.v1.Put(UpdateQueueFu, pc.handlerUpdateFollowUpPhone)
+	pc.v1.Get(AnalyticDashboard, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerGetDashboardAnalytic)
 
 	// ----- Content
 	pc.v1.Get(AdvertisementContent, pc.handlerContentAdvertisement)

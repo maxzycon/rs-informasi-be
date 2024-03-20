@@ -1,4 +1,4 @@
-module github.com/maxzycon/rs-farmasi-be
+module github.com/maxzycon/rs-informasi-be
 
 go 1.20
 

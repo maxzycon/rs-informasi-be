@@ -3,9 +3,9 @@ package controller
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/log"
-	"github.com/maxzycon/rs-farmasi-be/internal/domain/user/dto"
-	"github.com/maxzycon/rs-farmasi-be/pkg/errors"
-	"github.com/maxzycon/rs-farmasi-be/pkg/httputil"
+	"github.com/maxzycon/rs-informasi-be/internal/domain/user/dto"
+	"github.com/maxzycon/rs-informasi-be/pkg/errors"
+	"github.com/maxzycon/rs-informasi-be/pkg/httputil"
 )
 
 func (c *usersController) handlerLogin(f *fiber.Ctx) (err error) {

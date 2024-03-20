@@ -2,10 +2,10 @@ package controller
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/maxzycon/rs-farmasi-be/internal/config"
-	"github.com/maxzycon/rs-farmasi-be/internal/domain/user/service"
-	"github.com/maxzycon/rs-farmasi-be/pkg/constant/role"
-	"github.com/maxzycon/rs-farmasi-be/pkg/middleware"
+	"github.com/maxzycon/rs-informasi-be/internal/config"
+	"github.com/maxzycon/rs-informasi-be/internal/domain/user/service"
+	"github.com/maxzycon/rs-informasi-be/pkg/constant/role"
+	"github.com/maxzycon/rs-informasi-be/pkg/middleware"
 )
 
 const (

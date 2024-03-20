@@ -3,7 +3,7 @@ package errors
 import (
 	"errors"
 
-	"github.com/maxzycon/rs-farmasi-be/pkg/dto"
+	"github.com/maxzycon/rs-informasi-be/pkg/dto"
 	"gorm.io/gorm"
 )
 

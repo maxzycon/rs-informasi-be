@@ -3,9 +3,9 @@ package controller
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/log"
-	"github.com/maxzycon/rs-farmasi-be/internal/domain/s3/dto"
-	"github.com/maxzycon/rs-farmasi-be/pkg/constant"
-	"github.com/maxzycon/rs-farmasi-be/pkg/httputil"
+	"github.com/maxzycon/rs-informasi-be/internal/domain/s3/dto"
+	"github.com/maxzycon/rs-informasi-be/pkg/constant"
+	"github.com/maxzycon/rs-informasi-be/pkg/httputil"
 )
 
 func (c *S3Controller) handlerUploadToS3(f *fiber.Ctx) (err error) {

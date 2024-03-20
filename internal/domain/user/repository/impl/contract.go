@@ -1,7 +1,7 @@
 package impl
 
 import (
-	"github.com/maxzycon/rs-farmasi-be/internal/config"
+	"github.com/maxzycon/rs-informasi-be/internal/config"
 	"gorm.io/gorm"
 )
 

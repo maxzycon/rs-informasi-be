@@ -5,9 +5,8 @@ import (
 	"fmt"
 
 	"github.com/Masterminds/squirrel"
-	"github.com/gofiber/fiber/v2/log"
-	"github.com/maxzycon/rs-farmasi-be/internal/domain/global/dto"
-	"github.com/maxzycon/rs-farmasi-be/pkg/model"
+	"github.com/maxzycon/rs-informasi-be/internal/domain/global/dto"
+	"github.com/maxzycon/rs-informasi-be/pkg/model"
 )
 
 func (s *GlobalService) GetRunningTextByMerchantIdStr(ctx context.Context, id string) (resp *dto.RunningText, err error) {
@@ -137,7 +136,7 @@ func (s *GlobalService) GetMerchantPaginated(ctx context.Context, payload *dto.P
 func (s *GlobalService) GetMerchantPluck(ctx context.Context) (resp []*dto.DefaultPluck, err error) {
 	rows, err := s.globalRepository.FindAllMerchant(ctx)
 	if err != nil {
-		log.Errorf("err get Merchant paginated")
+		s.log.Errorf("err get Merchant paginated")
 		return
 	}
 	resp = make([]*dto.DefaultPluck, 0)
@@ -153,7 +152,7 @@ func (s *GlobalService) GetMerchantPluck(ctx context.Context) (resp []*dto.Defau
 func (s *GlobalService) GetMerchantById(ctx context.Context, id int) (resp *dto.MerchantRow, err error) {
 	row, err := s.globalRepository.FindMerchantById(ctx, id)
 	if err != nil {
-		log.Errorf("err get Merchant paginated")
+		s.log.Errorf("err get Merchant paginated")
 		return
 	}
 	resp = &dto.MerchantRow{
@@ -184,7 +183,7 @@ func (s *GlobalService) CreateMerchant(ctx context.Context, payload *dto.Payload
 		MerchantCategoryID: payload.MerchantCategoryID,
 	})
 	if err != nil {
-		log.Errorf("err Merchant status")
+		s.log.Errorf("err Merchant status")
 		return
 	}
 	return
@@ -201,7 +200,7 @@ func (s *GlobalService) UpdateMerchantById(ctx context.Context, id int, payload 
 		MerchantCategoryID: payload.MerchantCategoryID,
 	})
 	if err != nil {
-		log.Errorf("err update Merchant %d", id)
+		s.log.Errorf("err update Merchant %d", id)
 		return
 	}
 	return
@@ -212,7 +211,7 @@ func (s *GlobalService) UpdateMerchantConfigById(ctx context.Context, id int, pa
 		RunningText: payload.RunningText,
 	})
 	if err != nil {
-		log.Errorf("err update Merchant %d", id)
+		s.log.Errorf("err update Merchant %d", id)
 		return
 	}
 	return
@@ -221,7 +220,7 @@ func (s *GlobalService) UpdateMerchantConfigById(ctx context.Context, id int, pa
 func (s *GlobalService) DeleteMerchantById(ctx context.Context, id int) (resp *int64, err error) {
 	resp, err = s.globalRepository.DeleteMerchantById(ctx, id)
 	if err != nil {
-		log.Errorf("err delete Merchant %d", id)
+		s.log.Errorf("err delete Merchant %d", id)
 		return
 	}
 	return

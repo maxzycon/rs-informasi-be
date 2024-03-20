@@ -17,7 +17,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/gofiber/fiber/v2/log"
-	"github.com/maxzycon/rs-farmasi-be/internal/domain/s3/dto"
+	"github.com/maxzycon/rs-informasi-be/internal/domain/s3/dto"
 )
 
 func (s *S3Service) UploadFileToS3(ctx context.Context, file *multipart.FileHeader, bucket string, folder *string) (resp string, err error) {

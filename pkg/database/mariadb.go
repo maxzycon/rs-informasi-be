@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/maxzycon/rs-farmasi-be/internal/config"
+	"github.com/maxzycon/rs-informasi-be/internal/config"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 

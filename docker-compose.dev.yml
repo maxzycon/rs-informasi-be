@@ -3,7 +3,7 @@ version: "3"
 services:
   backend:
     build: .
-    image: maxzycon/go-rs:be-dev-latest
+    image: maxzycon/go-rs-information:be-dev-latest
     restart: unless-stopped
     ports:
-      - "8084:8082"
+      - "8085:8082"

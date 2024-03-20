@@ -3,16 +3,15 @@ package impl
 import (
 	"context"
 
-	"github.com/gofiber/fiber/v2/log"
-	"github.com/maxzycon/rs-farmasi-be/internal/domain/global/dto"
-	"github.com/maxzycon/rs-farmasi-be/pkg/model"
-	"github.com/maxzycon/rs-farmasi-be/pkg/util/pagination"
+	"github.com/maxzycon/rs-informasi-be/internal/domain/global/dto"
+	"github.com/maxzycon/rs-informasi-be/pkg/model"
+	"github.com/maxzycon/rs-informasi-be/pkg/util/pagination"
 )
 
 func (s *GlobalService) GetMerchantCategoryPaginated(ctx context.Context, payload *pagination.DefaultPaginationPayload) (resp pagination.DefaultPagination, err error) {
 	resp, err = s.globalRepository.FindMerchantCategoryPaginated(ctx, payload)
 	if err != nil {
-		log.Errorf("err get MerchantCategory paginated")
+		s.log.Errorf("err get MerchantCategory paginated")
 		return
 	}
 
@@ -33,7 +32,7 @@ func (s *GlobalService) GetMerchantCategoryPaginated(ctx context.Context, payloa
 func (s *GlobalService) GetMerchantCategoryPluck(ctx context.Context) (resp []*dto.DefaultPluck, err error) {
 	rows, err := s.globalRepository.FindAllMerchantCategory(ctx)
 	if err != nil {
-		log.Errorf("err get MerchantCategory paginated")
+		s.log.Errorf("err get MerchantCategory paginated")
 		return
 	}
 	resp = make([]*dto.DefaultPluck, 0)
@@ -49,7 +48,7 @@ func (s *GlobalService) GetMerchantCategoryPluck(ctx context.Context) (resp []*d
 func (s *GlobalService) GetMerchantCategoryById(ctx context.Context, id int) (resp *dto.MerchantCategoryRow, err error) {
 	row, err := s.globalRepository.FindMerchantCategoryById(ctx, id)
 	if err != nil {
-		log.Errorf("err get MerchantCategory paginated")
+		s.log.Errorf("err get MerchantCategory paginated")
 		return
 	}
 	resp = &dto.MerchantCategoryRow{
@@ -64,7 +63,7 @@ func (s *GlobalService) CreateMerchantCategory(ctx context.Context, payload *dto
 		Name: payload.Name,
 	})
 	if err != nil {
-		log.Errorf("err MerchantCategory status")
+		s.log.Errorf("err MerchantCategory status")
 		return
 	}
 	return
@@ -75,7 +74,7 @@ func (s *GlobalService) UpdateMerchantCategoryById(ctx context.Context, id int, 
 		Name: payload.Name,
 	})
 	if err != nil {
-		log.Errorf("err update MerchantCategory %d", id)
+		s.log.Errorf("err update MerchantCategory %d", id)
 		return
 	}
 	return
@@ -84,7 +83,7 @@ func (s *GlobalService) UpdateMerchantCategoryById(ctx context.Context, id int, 
 func (s *GlobalService) DeleteMerchantCategoryById(ctx context.Context, id int) (resp *int64, err error) {
 	resp, err = s.globalRepository.DeleteMerchantCategoryById(ctx, id)
 	if err != nil {
-		log.Errorf("err delete MerchantCategory %d", id)
+		s.log.Errorf("err delete MerchantCategory %d", id)
 		return
 	}
 	return

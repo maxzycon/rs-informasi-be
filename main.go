@@ -2,8 +2,8 @@ package main
 
 import (
 	"github.com/gofiber/fiber/v2/log"
-	"github.com/maxzycon/rs-farmasi-be/cmd"
-	"github.com/maxzycon/rs-farmasi-be/internal/config"
+	"github.com/maxzycon/rs-informasi-be/cmd"
+	"github.com/maxzycon/rs-informasi-be/internal/config"
 )
 
 func main() {

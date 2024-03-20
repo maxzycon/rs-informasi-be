@@ -58,62 +58,142 @@ type MerchantCategory struct {
 	Name string `gorm:"not null"`
 }
 
-type Location struct {
+type Floor struct {
+	Model
+	Name string `gorm:"not null"`
+
+	MerchantID uint `gorm:"not null"`
+	Merchant   Merchant
+}
+
+type Facility struct {
+	Model
+	Name string `gorm:"not null"`
+	Desc *string
+
+	MerchantID uint `gorm:"not null"`
+	Merchant   Merchant
+}
+
+type Services struct {
+	Model
+	Name  string `gorm:"not null"`
+	Desc  *string
+	Photo *string
+
+	MerchantID uint `gorm:"not null"`
+	Merchant   Merchant
+}
+
+type ProductCategory struct {
+	Model
+	Name string `gorm:"not null"`
+
+	MerchantID uint `gorm:"not null"`
+	Merchant   Merchant
+}
+
+type Information struct {
+	Model
+	Name                  string `gorm:"not null"`
+	Desc                  *string
+	Photo                 *string
+	InformationCategoryID uint
+	InformationCategory   InformationCategory
+
+	MerchantID uint `gorm:"not null"`
+	Merchant   Merchant
+}
+
+type InformationCategory struct {
+	Model
+	Name string `gorm:"not null"`
+
+	MerchantID uint `gorm:"not null"`
+	Merchant   Merchant
+}
+
+type Product struct {
+	Model
+	Name              string `gorm:"not null"`
+	ProductCategoryID uint
+	ProductCategory   ProductCategory
+
+	Price             float64 `gorm:"not null"`
+	IsDiscount        bool    `gorm:"not null;default:0"`
+	AmountDiscount    *float64
+	DiscountStartDate *datatypes.Date
+	DiscountEndDate   *datatypes.Date
+
+	Photo  *string
+	Detail []DetailProduct
+
+	MerchantID uint `gorm:"not null"`
+	Merchant   Merchant
+}
+
+type DetailProduct struct {
+	Model
+	Name      string `gorm:"not null"`
+	ProductID uint
+	Product   Product
+}
+
+type Organ struct {
 	Model
 	Name string `gorm:"not null"`
 }
 
-type LocationUser struct {
+type Doctor struct {
 	Model
-	UserID     uint `gorm:"index:idx_user_id_location_id_unique,unique"`
-	User       User
-	LocationID uint `gorm:"index:idx_user_id_location_id_unique,unique"`
-	Location   Location
+	Name             string `gorm:"not null"`
+	SpecializationID uint   `gorm:"not null"`
+	Specialization   Specialization
+
+	Skill     []DoctorSkill
+	Education []DoctorEducation
+	Slot      []DoctorSlot
+
+	Photo *string
+
+	MerchantID uint `gorm:"not null"`
+	Merchant   Merchant
 }
 
-type Queue struct {
+type DoctorSkill struct {
 	Model
-	LocationID   uint
-	Location     Location
-	LocationName string
-
-	QueueNo       string `gorm:"not null"`
-	MedicalRecord string `gorm:"not null"`
-	Type          uint   `gorm:"not null"` // 1 = non racikan, 2 = racikan
-
-	MerchantID   uint `gorm:"not null"`
-	Merchant     Merchant
-	MerchantName string
-
-	// ----- who create this queue
-	UserID   uint `gorm:"not null"`
-	User     User
-	UserName string
-
-	IsFollowUp    bool `gorm:"not null;default:0"`
-	FollowUpPhone *string
-
-	ModifiedBy *string
-
-	Histories []QueueHistory
+	DoctorID uint `gorm:"not null"`
+	Doctor   Doctor
+	Name     string `gorm:"not null"`
 }
 
-type QueueHistory struct {
-	gorm.Model
+type DoctorSlot struct {
+	Model
+	DoctorID  uint `gorm:"not null"`
+	Doctor    Doctor
+	Day       uint   `gorm:"not null"`
+	StartTime string `gorm:"not null"`
+	EndTime   string `gorm:"not null"`
+}
 
-	Status     uint `gorm:"not null"` // 1 = validasi, 2 = proses, 3 = siap diserahkan, 4 = diserahkan
-	StartQueue *time.Time
-	Duration   *float64
-	EndQueue   *time.Time // sum of start + duration
+type DoctorEducation struct {
+	Model
+	DoctorID uint `gorm:"not null"`
+	Doctor   Doctor
+	Grade    string `gorm:"not null"`
+	Major    string `gorm:"not null"`
+	Name     string `gorm:"not null"`
+}
 
-	Type uint `gorm:"not null;default:1"` // 1 = default, 2 = extend
+type Specialization struct {
+	Model
+	Name string `gorm:"not null"`
 
-	QueueID uint `gorm:"not null"`
-	Queue   Queue
+	OrganID uint `gorm:"not null"`
+	Organ   Organ
 
-	UserID   uint `gorm:"not null"`
-	User     User
-	UserName string
+	MerchantID uint `gorm:"not null"`
+	Merchant   Merchant
 }
 
 type AdvertisementCategory struct {
@@ -138,4 +218,9 @@ type Advertisement struct {
 	DateEnd      datatypes.Date `gorm:"not null"`
 
 	Description *string
+}
+
+type LogsPage struct {
+	Model
+	Url string `gorm:"not null"`
 }

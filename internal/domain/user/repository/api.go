@@ -3,10 +3,10 @@ package repository
 import (
 	"context"
 
-	"github.com/maxzycon/rs-farmasi-be/pkg/authutil"
+	"github.com/maxzycon/rs-informasi-be/pkg/authutil"
 
-	"github.com/maxzycon/rs-farmasi-be/pkg/model"
-	"github.com/maxzycon/rs-farmasi-be/pkg/util/pagination"
+	"github.com/maxzycon/rs-informasi-be/pkg/model"
+	"github.com/maxzycon/rs-informasi-be/pkg/util/pagination"
 )
 
 type UserRepository interface {

@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/gofiber/fiber/v2/log"
-	"github.com/maxzycon/rs-farmasi-be/pkg/errors"
+	"github.com/maxzycon/rs-informasi-be/pkg/errors"
 	uuid "github.com/satori/go.uuid"
 )
 

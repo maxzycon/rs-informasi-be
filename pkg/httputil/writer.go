@@ -3,11 +3,11 @@ package httputil
 import (
 	"net/http"
 
-	"github.com/maxzycon/rs-farmasi-be/pkg/constant"
+	"github.com/maxzycon/rs-informasi-be/pkg/constant"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/maxzycon/rs-farmasi-be/pkg/dto"
-	"github.com/maxzycon/rs-farmasi-be/pkg/errors"
+	"github.com/maxzycon/rs-informasi-be/pkg/dto"
+	"github.com/maxzycon/rs-informasi-be/pkg/errors"
 )
 
 func WriteSuccessResponse(e *fiber.Ctx, payload interface{}) error {

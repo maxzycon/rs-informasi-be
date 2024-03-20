@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/maxzycon/rs-farmasi-be/pkg/model"
-	"github.com/maxzycon/rs-farmasi-be/pkg/util/pagination"
+	"github.com/maxzycon/rs-informasi-be/pkg/model"
+	"github.com/maxzycon/rs-informasi-be/pkg/util/pagination"
 )
 
 func (r *GlobalRepository) FindAdvertisementById(ctx context.Context, id int) (resp *model.Advertisement, err error) {

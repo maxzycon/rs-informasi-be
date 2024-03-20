@@ -3,9 +3,9 @@ package impl
 import (
 	"context"
 
-	"github.com/maxzycon/rs-farmasi-be/internal/domain/global/dto"
-	"github.com/maxzycon/rs-farmasi-be/pkg/authutil"
-	typequeue "github.com/maxzycon/rs-farmasi-be/pkg/constant/type_queue"
+	"github.com/maxzycon/rs-informasi-be/internal/domain/global/dto"
+	"github.com/maxzycon/rs-informasi-be/pkg/authutil"
+	typequeue "github.com/maxzycon/rs-informasi-be/pkg/constant/type_queue"
 )
 
 var bulanMap = map[string]string{

@@ -4,7 +4,7 @@ import (
 	"context"
 	"mime/multipart"
 
-	"github.com/maxzycon/rs-farmasi-be/internal/domain/s3/dto"
+	"github.com/maxzycon/rs-informasi-be/internal/domain/s3/dto"
 )
 
 type S3Service interface {

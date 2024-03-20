@@ -3,24 +3,23 @@ package service
 import (
 	"context"
 
-	"github.com/maxzycon/rs-farmasi-be/pkg/authutil"
-	"github.com/maxzycon/rs-farmasi-be/pkg/util/pagination"
+	"github.com/maxzycon/rs-informasi-be/pkg/authutil"
+	"github.com/maxzycon/rs-informasi-be/pkg/util/pagination"
 
-	"github.com/maxzycon/rs-farmasi-be/internal/domain/global/dto"
+	"github.com/maxzycon/rs-informasi-be/internal/domain/global/dto"
 )
 
 type GlobalService interface {
 	GetAllUserPluck(ctx context.Context, user *authutil.UserClaims) (resp []*dto.UserRowPluck, err error)
 
-	// ---- Location
-	GetLocationPaginated(ctx context.Context, payload *pagination.DefaultPaginationPayload) (resp pagination.DefaultPagination, err error)
-	GetLocationPluck(ctx context.Context) (resp []*dto.DefaultPluck, err error)
-	GetLocationById(ctx context.Context, id int) (resp *dto.LocationRow, err error)
-	GetAllLocationByUser(ctx context.Context) (resp []*dto.LocationUserRow, err error)
-	CreateLocation(ctx context.Context, payload *dto.PayloadLocation) (resp *int64, err error)
-	UpdateLocationById(ctx context.Context, id int, payload *dto.PayloadLocation) (resp *int64, err error)
-	UpdateAllLocationByUser(ctx context.Context, payload *dto.WrapperUpdateLocationUser) (resp *int64, err error)
-	DeleteLocationById(ctx context.Context, id int) (resp *int64, err error)
+	// ---- Floor
+	GetFloorPaginated(ctx context.Context, payload *pagination.DefaultPaginationPayload) (resp pagination.DefaultPagination, err error)
+	GetFloorPluck(ctx context.Context) (resp []*dto.DefaultPluck, err error)
+	GetFloorById(ctx context.Context, id int) (resp *dto.FloorRow, err error)
+	GetAllFloorByUser(ctx context.Context) (resp []*dto.FloorUserRow, err error)
+	CreateFloor(ctx context.Context, payload *dto.PayloadFloor) (resp *int64, err error)
+	UpdateFloorById(ctx context.Context, id int, payload *dto.PayloadFloor) (resp *int64, err error)
+	DeleteFloorById(ctx context.Context, id int) (resp *int64, err error)
 
 	// ---- MerchantCategory
 	GetMerchantCategoryPaginated(ctx context.Context, payload *pagination.DefaultPaginationPayload) (resp pagination.DefaultPagination, err error)
@@ -29,6 +28,78 @@ type GlobalService interface {
 	CreateMerchantCategory(ctx context.Context, payload *dto.PayloadMerchantCategory) (resp *int64, err error)
 	UpdateMerchantCategoryById(ctx context.Context, id int, payload *dto.PayloadMerchantCategory) (resp *int64, err error)
 	DeleteMerchantCategoryById(ctx context.Context, id int) (resp *int64, err error)
+
+	// ---- MerchantSpecialization
+	GetMerchantSpecializationPaginated(ctx context.Context, payload *pagination.DefaultPaginationPayload) (resp pagination.DefaultPagination, err error)
+	GetMerchantSpecializationPluck(ctx context.Context) (resp []*dto.DefaultPluck, err error)
+	GetMerchantSpecializationById(ctx context.Context, id int) (resp *dto.MerchantSpecializationRow, err error)
+	CreateMerchantSpecialization(ctx context.Context, payload *dto.PayloadMerchantSpecialization) (resp *int64, err error)
+	UpdateMerchantSpecializationById(ctx context.Context, id int, payload *dto.PayloadMerchantSpecialization) (resp *int64, err error)
+	DeleteMerchantSpecializationById(ctx context.Context, id int) (resp *int64, err error)
+
+	// ---- MerchantInformationCategory
+	GetInformationCategoryPaginated(ctx context.Context, payload *pagination.DefaultPaginationPayload) (resp pagination.DefaultPagination, err error)
+	GetInformationCategoryPluck(ctx context.Context) (resp []*dto.DefaultPluck, err error)
+	GetInformationCategoryById(ctx context.Context, id int) (resp *dto.InformationCategoryRow, err error)
+	CreateInformationCategory(ctx context.Context, payload *dto.PayloadInformationCategory) (resp *int64, err error)
+	UpdateInformationCategoryById(ctx context.Context, id int, payload *dto.PayloadInformationCategory) (resp *int64, err error)
+	DeleteInformationCategoryById(ctx context.Context, id int) (resp *int64, err error)
+
+	// ---- ProductCategory
+	GetProductCategoryPaginated(ctx context.Context, payload *pagination.DefaultPaginationPayload) (resp pagination.DefaultPagination, err error)
+	GetProductCategoryPluck(ctx context.Context) (resp []*dto.DefaultPluck, err error)
+	GetProductCategoryById(ctx context.Context, id int) (resp *dto.ProductCategoryRow, err error)
+	CreateProductCategory(ctx context.Context, payload *dto.PayloadProductCategory) (resp *int64, err error)
+	UpdateProductCategoryById(ctx context.Context, id int, payload *dto.PayloadProductCategory) (resp *int64, err error)
+	DeleteProductCategoryById(ctx context.Context, id int) (resp *int64, err error)
+
+	// ---- Facility
+	GetFacilityPaginated(ctx context.Context, payload *pagination.DefaultPaginationPayload) (resp pagination.DefaultPagination, err error)
+	GetFacilityPluck(ctx context.Context) (resp []*dto.DefaultPluck, err error)
+	GetFacilityById(ctx context.Context, id int) (resp *dto.FacilityRow, err error)
+	CreateFacility(ctx context.Context, payload *dto.PayloadFacility) (resp *int64, err error)
+	UpdateFacilityById(ctx context.Context, id int, payload *dto.PayloadFacility) (resp *int64, err error)
+	DeleteFacilityById(ctx context.Context, id int) (resp *int64, err error)
+
+	// ---- Organ
+	GetOrganPaginated(ctx context.Context, payload *pagination.DefaultPaginationPayload) (resp pagination.DefaultPagination, err error)
+	GetOrganPluck(ctx context.Context) (resp []*dto.DefaultPluck, err error)
+	GetOrganById(ctx context.Context, id int) (resp *dto.OrganRow, err error)
+	CreateOrgan(ctx context.Context, payload *dto.PayloadOrgan) (resp *int64, err error)
+	UpdateOrganById(ctx context.Context, id int, payload *dto.PayloadOrgan) (resp *int64, err error)
+	DeleteOrganById(ctx context.Context, id int) (resp *int64, err error)
+
+	// ---- Information
+	GetInformationPaginated(ctx context.Context, payload *pagination.DefaultPaginationPayload) (resp pagination.DefaultPagination, err error)
+	GetInformationPluck(ctx context.Context) (resp []*dto.DefaultPluck, err error)
+	GetInformationById(ctx context.Context, id int) (resp *dto.InformationRow, err error)
+	CreateInformation(ctx context.Context, payload *dto.PayloadInformation) (resp *int64, err error)
+	UpdateInformationById(ctx context.Context, id int, payload *dto.PayloadInformation) (resp *int64, err error)
+	DeleteInformationById(ctx context.Context, id int) (resp *int64, err error)
+
+	// ---- Product
+	GetProductPaginated(ctx context.Context, payload *pagination.DefaultPaginationPayload) (resp pagination.DefaultPagination, err error)
+	GetProductPluck(ctx context.Context) (resp []*dto.DefaultPluck, err error)
+	GetProductById(ctx context.Context, id int) (resp *dto.ProductRow, err error)
+	CreateProduct(ctx context.Context, payload *dto.PayloadProduct) (resp *int64, err error)
+	UpdateProductById(ctx context.Context, id int, payload *dto.PayloadProduct) (resp *int64, err error)
+	DeleteProductById(ctx context.Context, id int) (resp *int64, err error)
+
+	// ---- Service
+	GetServicePaginated(ctx context.Context, payload *pagination.DefaultPaginationPayload) (resp pagination.DefaultPagination, err error)
+	GetServicePluck(ctx context.Context) (resp []*dto.DefaultPluck, err error)
+	GetServiceById(ctx context.Context, id int) (resp *dto.ServiceRow, err error)
+	CreateService(ctx context.Context, payload *dto.PayloadService) (resp *int64, err error)
+	UpdateServiceById(ctx context.Context, id int, payload *dto.PayloadService) (resp *int64, err error)
+	DeleteServiceById(ctx context.Context, id int) (resp *int64, err error)
+
+	// ---- Doctor
+	GetDoctorPaginated(ctx context.Context, payload *pagination.DefaultPaginationPayload) (resp pagination.DefaultPagination, err error)
+	GetDoctorPluck(ctx context.Context) (resp []*dto.DefaultPluck, err error)
+	GetDoctorById(ctx context.Context, id int) (resp *dto.DoctorByIdRow, err error)
+	CreateDoctor(ctx context.Context, payload *dto.PayloadDoctor) (resp *int64, err error)
+	UpdateDoctorById(ctx context.Context, id int, payload *dto.PayloadDoctor) (resp *int64, err error)
+	DeleteDoctorById(ctx context.Context, id int) (resp *int64, err error)
 
 	// ---- Merchant
 	GetMerchantPaginated(ctx context.Context, payload *dto.ParamsPaginationMerchant) (resp dto.MerchantWrapper, err error)
@@ -57,24 +128,9 @@ type GlobalService interface {
 	DeleteAdvertisementById(ctx context.Context, id int) (resp *int64, err error)
 	GetListContent(ctx context.Context, merchantIDstr string) (resp *dto.AdvertisementContentWrapper, err error)
 
-	// ----- Queues
-	GetQueuePaginated(ctx context.Context, payload *dto.ParamsQueueQueries) (resp dto.QueueWrapper, err error)
-	GetQueueById(ctx context.Context, id int) (resp *dto.QueueRowDetail, err error)
-	CreateQueue(ctx context.Context, payload *dto.PayloadQueue) (resp *int64, err error)
-	UpdateStatusQueueById(ctx context.Context, id int, payload *dto.PayloadUpdateQueue) (resp *int64, err error)
-	UpdateQueueById(ctx context.Context, id int, payload *dto.PayloadQueue) (resp *int64, err error)
-	DeleteQueueById(ctx context.Context, id int) (resp *int64, err error)
-
 	// ----- Analytic
 	GetDashboardAnalytic(ctx context.Context) (resp *dto.SummaryDashboardWrapper, err error)
 
 	// ----- Dashboard queue
-	GetDashboardDisplay(ctx context.Context, payload *dto.ParamsQueueDisplay, merchantIdStr string) (resp *dto.QueueDataDisplayWrapper, err error)
 	GetMerchantDetailAdvertisement(ctx context.Context, merchantIdStr string) (resp *dto.AdvertisementMerchant, err error)
-
-	// ----- Get Queue detail by search
-	GetQueueBySearch(ctx context.Context, merchantId string, search string) (resp *dto.QueueUserSearch, err error)
-
-	// ----- Update queue
-	UpdateFuQueueNo(ctx context.Context, id string, newPhone string) (err error)
 }

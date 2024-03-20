@@ -6,13 +6,12 @@ import (
 	"time"
 
 	"github.com/Masterminds/squirrel"
-	"github.com/gofiber/fiber/v2/log"
-	"github.com/maxzycon/rs-farmasi-be/internal/domain/global/dto"
-	"github.com/maxzycon/rs-farmasi-be/pkg/authutil"
-	"github.com/maxzycon/rs-farmasi-be/pkg/constant/role"
-	statusadvertisement "github.com/maxzycon/rs-farmasi-be/pkg/constant/status_advertisement"
-	"github.com/maxzycon/rs-farmasi-be/pkg/model"
-	"github.com/maxzycon/rs-farmasi-be/pkg/util/timeutil"
+	"github.com/maxzycon/rs-informasi-be/internal/domain/global/dto"
+	"github.com/maxzycon/rs-informasi-be/pkg/authutil"
+	"github.com/maxzycon/rs-informasi-be/pkg/constant/role"
+	statusadvertisement "github.com/maxzycon/rs-informasi-be/pkg/constant/status_advertisement"
+	"github.com/maxzycon/rs-informasi-be/pkg/model"
+	"github.com/maxzycon/rs-informasi-be/pkg/util/timeutil"
 	"gorm.io/datatypes"
 )
 
@@ -299,7 +298,7 @@ func (s *GlobalService) GetListContent(ctx context.Context, merchantIDstr string
 func (s *GlobalService) GetAdvertisementPluck(ctx context.Context) (resp []*dto.DefaultPluck, err error) {
 	rows, err := s.globalRepository.FindAllAdvertisement(ctx)
 	if err != nil {
-		log.Errorf("err get Advertisement paginated")
+		s.log.Errorf("err get Advertisement paginated")
 		return
 	}
 	resp = make([]*dto.DefaultPluck, 0)
@@ -315,7 +314,7 @@ func (s *GlobalService) GetAdvertisementPluck(ctx context.Context) (resp []*dto.
 func (s *GlobalService) GetAdvertisementById(ctx context.Context, id int) (resp *dto.AdvertisementDetailRow, err error) {
 	row, err := s.globalRepository.FindAdvertisementById(ctx, id)
 	if err != nil {
-		log.Errorf("err get Advertisement paginated")
+		s.log.Errorf("err get Advertisement paginated")
 		return
 	}
 	resp = &dto.AdvertisementDetailRow{
@@ -332,13 +331,13 @@ func (s *GlobalService) GetAdvertisementById(ctx context.Context, id int) (resp 
 
 	d, err := row.DateEnd.Value()
 	if err != nil {
-		log.Errorf("err get Advertisement paginated")
+		s.log.Errorf("err get Advertisement paginated")
 		return
 	}
 
 	c, err := row.DateEnd.Value()
 	if err != nil {
-		log.Errorf("err get Advertisement paginated")
+		s.log.Errorf("err get Advertisement paginated")
 		return
 	}
 	r, _ := d.(time.Time)
@@ -372,7 +371,7 @@ func (s *GlobalService) CreateAdvertisement(ctx context.Context, payload *dto.Pa
 	resp, err = s.globalRepository.CreateAdvertisement(ctx, entity)
 
 	if err != nil {
-		log.Errorf("err Advertisement status")
+		s.log.Errorf("err Advertisement status")
 		return
 	}
 	return
@@ -390,7 +389,7 @@ func (s *GlobalService) UpdateAdvertisementById(ctx context.Context, id int, pay
 		Description:             payload.Description,
 	})
 	if err != nil {
-		log.Errorf("err update Advertisement %d", id)
+		s.log.Errorf("err update Advertisement %d", id)
 		return
 	}
 	return
@@ -399,7 +398,7 @@ func (s *GlobalService) UpdateAdvertisementById(ctx context.Context, id int, pay
 func (s *GlobalService) DeleteAdvertisementById(ctx context.Context, id int) (resp *int64, err error) {
 	resp, err = s.globalRepository.DeleteAdvertisementById(ctx, id)
 	if err != nil {
-		log.Errorf("err delete Advertisement %d", id)
+		s.log.Errorf("err delete Advertisement %d", id)
 		return
 	}
 	return
