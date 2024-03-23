@@ -64,6 +64,11 @@ func (s *GlobalService) GetDoctorById(ctx context.Context, id int) (resp *dto.Do
 		Slots:            make([]*dto.DoctorSlotRow, 0),
 	}
 
+	if row.Photo != nil {
+		temp := s.conf.AWS_S3_URL + "/" + *row.Photo
+		resp.Photo = &temp
+	}
+
 	for _, v := range row.Education {
 		resp.Educations = append(resp.Educations, &dto.DoctorEducationRow{
 			ID:    v.ID,
@@ -131,9 +136,19 @@ func (s *GlobalService) CreateDoctor(ctx context.Context, payload *dto.PayloadDo
 }
 
 func (s *GlobalService) UpdateDoctorById(ctx context.Context, id int, payload *dto.PayloadDoctor) (resp *int64, err error) {
+	row, err := s.GetDoctorById(ctx, id)
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+
 	entity := &model.Doctor{
 		Name:             payload.Name,
 		SpecializationID: payload.SpecializationID,
+	}
+
+	if payload.Photo != nil && row.Photo != payload.Photo {
+		entity.Photo = payload.Photo
 	}
 
 	for _, v := range payload.Educations {

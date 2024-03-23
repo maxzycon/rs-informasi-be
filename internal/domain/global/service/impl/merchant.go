@@ -190,15 +190,26 @@ func (s *GlobalService) CreateMerchant(ctx context.Context, payload *dto.Payload
 }
 
 func (s *GlobalService) UpdateMerchantById(ctx context.Context, id int, payload *dto.PayloadMerchant) (resp *int64, err error) {
-	resp, err = s.globalRepository.UpdateMerchantById(ctx, id, &model.Merchant{
+	row, err := s.GetMerchantById(ctx, id)
+	if err != nil {
+		s.log.Errorf("err update Merchant %d", id)
+		return
+	}
+
+	entity := &model.Merchant{
 		Name:               payload.Name,
 		Address:            payload.Address,
 		Phone:              payload.Phone,
 		PICName:            payload.PICName,
 		Email:              payload.Email,
-		Photo:              payload.Photo,
 		MerchantCategoryID: payload.MerchantCategoryID,
-	})
+	}
+
+	if payload.Photo != nil && row.Photo != payload.Photo {
+		entity.Photo = payload.Photo
+	}
+
+	resp, err = s.globalRepository.UpdateMerchantById(ctx, id, entity)
 	if err != nil {
 		s.log.Errorf("err update Merchant %d", id)
 		return

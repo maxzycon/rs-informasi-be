@@ -93,12 +93,23 @@ func (s *GlobalService) CreateInformation(ctx context.Context, payload *dto.Payl
 }
 
 func (s *GlobalService) UpdateInformationById(ctx context.Context, id int, payload *dto.PayloadInformation) (resp *int64, err error) {
-	resp, err = s.globalRepository.UpdateInformationById(ctx, id, &model.Information{
+	row, err := s.GetInformationById(ctx, id)
+	if err != nil {
+		s.log.Errorf("err update Information %d", id)
+		return
+	}
+
+	entity := &model.Information{
 		Name:                  payload.Name,
 		Desc:                  payload.Desc,
-		Photo:                 payload.Photo,
 		InformationCategoryID: payload.InformationCategoryID,
-	})
+	}
+
+	if payload.Photo != nil && row.Photo != payload.Photo {
+		entity.Photo = payload.Photo
+	}
+
+	resp, err = s.globalRepository.UpdateInformationById(ctx, id, entity)
 	if err != nil {
 		s.log.Errorf("err update Information %d", id)
 		return

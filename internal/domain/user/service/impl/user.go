@@ -163,10 +163,13 @@ func (s *UserService) UpdateUser(ctx context.Context, payload dto.PayloadUpdateU
 		Email:      payload.Email,
 		NIK:        payload.NIK,
 		Prefix:     "+62",
-		Photo:      payload.ProfilePath,
 		MerchantID: payload.MerchantID,
 		Phone:      payload.Email,
 		Role:       payload.Role,
+	}
+
+	if payload.ProfilePath != nil && user.Photo != payload.ProfilePath {
+		userPayload.Phone = *payload.ProfilePath
 	}
 
 	if payload.Password != nil {

@@ -20,11 +20,18 @@ func (s *GlobalService) GetFacilityPaginated(ctx context.Context, payload *pagin
 	list, ok := resp.Items.([]*model.Facility)
 	if ok {
 		for _, v := range list {
-			respToDto = append(respToDto, &dto.FacilityRow{
+			dto := &dto.FacilityRow{
 				ID:          v.ID,
 				Name:        v.Name,
 				Description: v.Desc,
-			})
+			}
+
+			if v.Photo != nil {
+				temp := s.conf.AWS_S3_URL + "/" + *v.Photo
+				dto.Photo = &temp
+			}
+
+			respToDto = append(respToDto, dto)
 		}
 	}
 	resp.Items = respToDto
@@ -58,6 +65,12 @@ func (s *GlobalService) GetFacilityById(ctx context.Context, id int) (resp *dto.
 		Name:        row.Name,
 		Description: row.Desc,
 	}
+
+	if row.Photo != nil {
+		temp := s.conf.AWS_S3_URL + "/" + *row.Photo
+		resp.Photo = &temp
+	}
+
 	return
 }
 
@@ -67,6 +80,7 @@ func (s *GlobalService) CreateFacility(ctx context.Context, payload *dto.Payload
 		Name:       payload.Name,
 		Desc:       &payload.Description,
 		MerchantID: *user.MerchantID,
+		Photo:      payload.Photo,
 	})
 	if err != nil {
 		s.log.Errorf("err Facility status")
@@ -76,10 +90,22 @@ func (s *GlobalService) CreateFacility(ctx context.Context, payload *dto.Payload
 }
 
 func (s *GlobalService) UpdateFacilityById(ctx context.Context, id int, payload *dto.PayloadFacility) (resp *int64, err error) {
-	resp, err = s.globalRepository.UpdateFacilityById(ctx, id, &model.Facility{
+	entity := &model.Facility{
 		Name: payload.Name,
 		Desc: &payload.Description,
-	})
+	}
+
+	row, err := s.GetFacilityById(ctx, id)
+	if err != nil {
+		s.log.Errorf("err update Facility %d", id)
+		return
+	}
+
+	if payload.Photo != nil && row.Photo != payload.Photo {
+		entity.Photo = payload.Photo
+	}
+
+	resp, err = s.globalRepository.UpdateFacilityById(ctx, id, entity)
 	if err != nil {
 		s.log.Errorf("err update Facility %d", id)
 		return

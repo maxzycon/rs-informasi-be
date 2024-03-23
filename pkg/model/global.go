@@ -68,8 +68,9 @@ type Floor struct {
 
 type Facility struct {
 	Model
-	Name string `gorm:"not null"`
-	Desc *string
+	Name  string `gorm:"not null"`
+	Desc  *string
+	Photo *string
 
 	MerchantID uint `gorm:"not null"`
 	Merchant   Merchant

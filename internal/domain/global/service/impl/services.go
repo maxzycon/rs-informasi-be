@@ -90,11 +90,24 @@ func (s *GlobalService) CreateService(ctx context.Context, payload *dto.PayloadS
 }
 
 func (s *GlobalService) UpdateServiceById(ctx context.Context, id int, payload *dto.PayloadService) (resp *int64, err error) {
-	resp, err = s.globalRepository.UpdateServicesById(ctx, id, &model.Services{
+	row, err := s.GetServiceById(ctx, id)
+	if err != nil {
+		s.log.Errorf("err update Services %d", id)
+		return
+	}
+
+	entity := &model.Services{
 		Name:  payload.Name,
 		Desc:  payload.Desc,
 		Photo: payload.Photo,
-	})
+	}
+
+	if payload.Photo != nil && row.Photo != payload.Photo {
+		entity.Photo = row.Photo
+	}
+
+	resp, err = s.globalRepository.UpdateServicesById(ctx, id, entity)
+
 	if err != nil {
 		s.log.Errorf("err update Services %d", id)
 		return

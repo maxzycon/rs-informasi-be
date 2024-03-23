@@ -149,13 +149,20 @@ func (s *GlobalService) CreateProduct(ctx context.Context, payload *dto.PayloadP
 }
 
 func (s *GlobalService) UpdateProductById(ctx context.Context, id int, payload *dto.PayloadProduct) (resp *int64, err error) {
+	row, err := s.GetProductById(ctx, id)
+	if err != nil {
+		return nil, err
+	}
 	entity := &model.Product{
 		Name:              payload.Name,
 		IsDiscount:        payload.IsDiscount,
 		Price:             payload.Price,
 		ProductCategoryID: payload.CategoryProductID,
 		AmountDiscount:    payload.AmountDiscount,
-		Photo:             payload.Photo,
+	}
+
+	if payload.Photo != nil && row.Photo != payload.Photo {
+		entity.Photo = payload.Photo
 	}
 
 	if payload.IsDiscount && payload.StartDiscount != nil && payload.EndDiscount != nil {
