@@ -21,6 +21,14 @@ type GlobalService interface {
 	UpdateFloorById(ctx context.Context, id int, payload *dto.PayloadFloor) (resp *int64, err error)
 	DeleteFloorById(ctx context.Context, id int) (resp *int64, err error)
 
+	// ---- Room
+	GetRoomPaginated(ctx context.Context, payload *pagination.DefaultPaginationPayload) (resp pagination.DefaultPagination, err error)
+	GetRoomPluck(ctx context.Context) (resp []*dto.DefaultPluck, err error)
+	GetRoomById(ctx context.Context, id int) (resp *dto.RoomRow, err error)
+	CreateRoom(ctx context.Context, payload *dto.PayloadRoom) (resp *int64, err error)
+	UpdateRoomById(ctx context.Context, id int, payload *dto.PayloadRoom) (resp *int64, err error)
+	DeleteRoomById(ctx context.Context, id int) (resp *int64, err error)
+
 	// ---- MerchantCategory
 	GetMerchantCategoryPaginated(ctx context.Context, payload *pagination.DefaultPaginationPayload) (resp pagination.DefaultPagination, err error)
 	GetMerchantCategoryPluck(ctx context.Context) (resp []*dto.DefaultPluck, err error)

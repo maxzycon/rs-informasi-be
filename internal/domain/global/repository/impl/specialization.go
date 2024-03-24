@@ -9,7 +9,7 @@ import (
 )
 
 func (r *GlobalRepository) FindMerchantSpecializationById(ctx context.Context, id int) (resp *model.Specialization, err error) {
-	tx := r.db.WithContext(ctx).First(&resp, id)
+	tx := r.db.WithContext(ctx).Preload("Organ").First(&resp, id)
 	return resp, tx.Error
 }
 
@@ -21,7 +21,7 @@ func (r *GlobalRepository) FindAllMerchantSpecialization(ctx context.Context) (r
 
 func (r *GlobalRepository) FindMerchantSpecializationPaginated(ctx context.Context, payload *pagination.DefaultPaginationPayload) (resp pagination.DefaultPagination, err error) {
 	var MerchantSpecializations []*model.Specialization = make([]*model.Specialization, 0)
-	sql := r.db.Debug().WithContext(ctx)
+	sql := r.db.Debug().WithContext(ctx).Preload("Organ")
 	if payload.Search != nil && *payload.Search != "" {
 		search := fmt.Sprintf("%%%s%%", *payload.Search)
 		sql = sql.Where("name LIKE ?", search)

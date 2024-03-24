@@ -225,3 +225,13 @@ type LogsPage struct {
 	Model
 	Url string `gorm:"not null"`
 }
+
+type Room struct {
+	Model
+	Name    string `gorm:"not null"`
+	FloorID uint   `gorm:"not null"`
+	Floor   Floor
+
+	MerchantID uint `gorm:"not null"`
+	Merchant   Merchant
+}

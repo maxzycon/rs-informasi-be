@@ -20,6 +20,14 @@ type GlobalRepository interface {
 	UpdateFloorById(ctx context.Context, id int, entity *model.Floor) (resp *int64, err error)
 	DeleteFloorById(ctx context.Context, id int) (resp *int64, err error)
 
+	// ---- Rooms
+	FindRoomById(ctx context.Context, id int) (resp *model.Room, err error)
+	FindAllRoom(ctx context.Context) (resp []*model.Room, err error)
+	FindRoomPaginated(ctx context.Context, payload *pagination.DefaultPaginationPayload) (resp pagination.DefaultPagination, err error)
+	CreateRoom(ctx context.Context, entity *model.Room) (resp *int64, err error)
+	UpdateRoomById(ctx context.Context, id int, entity *model.Room) (resp *int64, err error)
+	DeleteRoomById(ctx context.Context, id int) (resp *int64, err error)
+
 	// ---- Merchant Category
 	FindMerchantCategoryById(ctx context.Context, id int) (resp *model.MerchantCategory, err error)
 	FindAllMerchantCategory(ctx context.Context) (resp []*model.MerchantCategory, err error)

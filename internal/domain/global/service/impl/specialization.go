@@ -21,8 +21,10 @@ func (s *GlobalService) GetMerchantSpecializationPaginated(ctx context.Context, 
 	if ok {
 		for _, v := range list {
 			respToDto = append(respToDto, &dto.MerchantSpecializationRow{
-				ID:   v.ID,
-				Name: v.Name,
+				ID:        v.ID,
+				Name:      v.Name,
+				OrganID:   v.OrganID,
+				OrganName: v.Organ.Name,
 			})
 		}
 	}
@@ -53,8 +55,10 @@ func (s *GlobalService) GetMerchantSpecializationById(ctx context.Context, id in
 		return
 	}
 	resp = &dto.MerchantSpecializationRow{
-		ID:   row.ID,
-		Name: row.Name,
+		ID:        row.ID,
+		Name:      row.Name,
+		OrganID:   row.OrganID,
+		OrganName: row.Organ.Name,
 	}
 	return
 }

@@ -18,6 +18,11 @@ const (
 	Floor             = "floors"
 	FloorById         = "floors/:id"
 
+	GetRoomPluck     = "rooms/list"
+	GetRoomPaginated = "rooms/paginated"
+	Room             = "rooms"
+	RoomById         = "rooms/:id"
+
 	GetFacilityPluck     = "facilities/list"
 	GetFacilityPaginated = "facilities/paginated"
 	Facility             = "facilities"
@@ -62,6 +67,11 @@ const (
 	GetMerchantCategoryPaginated = "merchant_categories/paginated"
 	MerchantCategory             = "merchant_categories"
 	MerchantCategoryById         = "merchant_categories/:id"
+
+	GetMerchantSpecializationPluck     = "merchant_specializations/list"
+	GetMerchantSpecializationPaginated = "merchant_specializations/paginated"
+	MerchantSpecialization             = "merchant_specializations"
+	MerchantSpecializationById         = "merchant_specializations/:id"
 
 	GetMerchantPluck     = "merchants/list"
 	GetMerchantPaginated = "merchants/paginated"
@@ -122,6 +132,14 @@ func (pc *GlobalController) Init() {
 	pc.v1.Post(Floor, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerCreateFloor)
 	pc.v1.Put(FloorById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerUpdateFloor)
 	pc.v1.Delete(FloorById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerDeleteFloor)
+
+	// ---- Rooms
+	pc.v1.Get(GetRoomPluck, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerGetAllRoomPluck)
+	pc.v1.Get(GetRoomPaginated, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerGetRoomPaginated)
+	pc.v1.Get(RoomById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerGetRoomById)
+	pc.v1.Post(Room, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerCreateRoom)
+	pc.v1.Put(RoomById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerUpdateRoom)
+	pc.v1.Delete(RoomById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerDeleteRoom)
 
 	// ---- Facility
 	pc.v1.Get(GetFacilityPluck, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerGetAllFacilityPluck)
@@ -195,6 +213,14 @@ func (pc *GlobalController) Init() {
 	pc.v1.Put(MerchantCategoryById, pc.middleware.Protected([]uint{role.ROLE_OWNER}), pc.handlerUpdateMerchantCategory)
 	pc.v1.Delete(MerchantCategoryById, pc.middleware.Protected([]uint{role.ROLE_OWNER}), pc.handlerDeleteMerchantCategory)
 
+	// ---- Specialization
+	pc.v1.Get(GetMerchantSpecializationPluck, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerGetAllMerchantSpecializationPluck)
+	pc.v1.Get(GetMerchantSpecializationPaginated, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerGetMerchantSpecializationPaginated)
+	pc.v1.Get(MerchantSpecializationById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerGetMerchantSpecializationById)
+	pc.v1.Post(MerchantSpecialization, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerCreateMerchantSpecialization)
+	pc.v1.Put(MerchantSpecializationById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerUpdateMerchantSpecialization)
+	pc.v1.Delete(MerchantSpecializationById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerDeleteMerchantSpecialization)
+
 	// ---- Merchant
 	pc.v1.Get(GetMerchantPluck, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerGetAllMerchantPluck)
 	pc.v1.Get(GetMerchantPaginated, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_MARKETING}), pc.handlerGetMerchantPaginated)
@@ -206,19 +232,19 @@ func (pc *GlobalController) Init() {
 
 	// ---- AdvertisementCategory
 	pc.v1.Get(GetAdvertisementCategoryPluck, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerGetAllAdvertisementCategoryPluck)
-	pc.v1.Get(GetAdvertisementCategoryPaginated, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_MARKETING}), pc.handlerGetAdvertisementCategoryPaginated)
-	pc.v1.Get(AdvertisementCategoryById, pc.middleware.Protected([]uint{role.ROLE_OWNER}), pc.handlerGetAdvertisementCategoryById)
-	pc.v1.Post(AdvertisementCategory, pc.middleware.Protected([]uint{role.ROLE_OWNER}), pc.handlerCreateAdvertisementCategory)
-	pc.v1.Put(AdvertisementCategoryById, pc.middleware.Protected([]uint{role.ROLE_OWNER}), pc.handlerUpdateAdvertisementCategory)
-	pc.v1.Delete(AdvertisementCategoryById, pc.middleware.Protected([]uint{role.ROLE_OWNER}), pc.handlerDeleteAdvertisementCategory)
+	pc.v1.Get(GetAdvertisementCategoryPaginated, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerGetAdvertisementCategoryPaginated)
+	pc.v1.Get(AdvertisementCategoryById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerGetAdvertisementCategoryById)
+	pc.v1.Post(AdvertisementCategory, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerCreateAdvertisementCategory)
+	pc.v1.Put(AdvertisementCategoryById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerUpdateAdvertisementCategory)
+	pc.v1.Delete(AdvertisementCategoryById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerDeleteAdvertisementCategory)
 
 	// ---- Advertisement
 	pc.v1.Get(GetAdvertisementPluck, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerGetAllAdvertisementPluck)
-	pc.v1.Get(GetAdvertisementPaginated, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_MARKETING, role.ROLE_MULTIMEDIA}), pc.handlerGetAdvertisementPaginated)
-	pc.v1.Get(AdvertisementById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_MARKETING, role.ROLE_MULTIMEDIA}), pc.handlerGetAdvertisementById)
-	pc.v1.Post(Advertisement, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_MARKETING, role.ROLE_MULTIMEDIA}), pc.handlerCreateAdvertisement)
-	pc.v1.Put(AdvertisementById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_MARKETING, role.ROLE_MULTIMEDIA}), pc.handlerUpdateAdvertisement)
-	pc.v1.Delete(AdvertisementById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_MARKETING, role.ROLE_MULTIMEDIA}), pc.handlerDeleteAdvertisement)
+	pc.v1.Get(GetAdvertisementPaginated, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerGetAdvertisementPaginated)
+	pc.v1.Get(AdvertisementById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerGetAdvertisementById)
+	pc.v1.Post(Advertisement, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerCreateAdvertisement)
+	pc.v1.Put(AdvertisementById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerUpdateAdvertisement)
+	pc.v1.Delete(AdvertisementById, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerDeleteAdvertisement)
 
 	// ----- Analytic
 	pc.v1.Get(AnalyticDashboard, pc.middleware.Protected([]uint{role.ROLE_OWNER, role.ROLE_SUPER_ADMIN}), pc.handlerGetDashboardAnalytic)

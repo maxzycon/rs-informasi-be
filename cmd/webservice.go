@@ -62,6 +62,7 @@ func InitWebservice(params *InitWebserviceParam) {
 		&model.AdvertisementCategory{},
 		&model.Advertisement{},
 		&model.Organ{},
+		&model.Room{},
 		&model.LogsPage{},
 	)
 
