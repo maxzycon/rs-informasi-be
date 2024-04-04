@@ -93,6 +93,30 @@ const (
 	AnalyticDashboard = "analytic/dashboard"
 	DisplayDashboard  = "dashboard"
 	RunningText       = "running_text/:id"
+
+	// ------ Kiosk
+	KioskDashboard         = "/kiosk/dashboard"
+	KioskListInformation   = "/kiosk/informations"
+	KioskInformationDetail = "/kiosk/:id/informations"
+
+	KioskListFacilities = "/kiosk/facilities"
+	KioskFacility       = "/kiosk/:id/facilities"
+
+	KioskListRooms = "/kiosk/rooms"
+	KioskRoom      = "/kiosk/:id/rooms"
+
+	KioskListServices = "/kiosk/services"
+	KioskService      = "/kiosk/:id/services"
+
+	KioskListProducts = "/kiosk/products"
+
+	KioskListDoctors = "/kiosk/doctors"
+	KioskDoctor      = "/kiosk/:id/doctors"
+
+	KioskMasterCategoryProduct     = "/kiosk/category_product"
+	KioskMasterCategoryInformation = "/kiosk/category_information"
+	KioskMasterFloor               = "/kiosk/floor"
+	KioskMasterSpecialization      = "/kiosk/specialization"
 )
 
 type GlobalControllerParams struct {
@@ -254,4 +278,30 @@ func (pc *GlobalController) Init() {
 	pc.v1.Get("advertisements/merchant/:id", pc.handlerMerchantAdvertisement)
 
 	pc.v1.Get(RunningText, pc.handlerGetRunningTextByMerchantIdStr)
+
+	// ----- Kiosk
+	pc.v1.Get(KioskDashboard, pc.handlerGetDashboard)
+
+	pc.v1.Get(KioskListInformation, pc.handlerGetAllInformationKiosk)
+	pc.v1.Get(KioskInformationDetail, pc.handlerGetInformationKioskById)
+
+	pc.v1.Get(KioskListFacilities, pc.handlerGetAllFacilitiesKiosk)
+	pc.v1.Get(KioskFacility, pc.handlerGetFacilityKioskById)
+
+	pc.v1.Get(KioskListRooms, pc.handlerGetAllRoomsKiosk)
+	pc.v1.Get(KioskRoom, pc.handlerGetRoomKioskById)
+
+	pc.v1.Get(KioskListServices, pc.handlerGetAllServicesKiosk)
+	pc.v1.Get(KioskService, pc.handlerGetServiceKioskById)
+
+	pc.v1.Get(KioskListProducts, pc.handlerGetAllProductsKiosk)
+
+	pc.v1.Get(KioskListDoctors, pc.handlerGetAllDoctorsKiosk)
+	pc.v1.Get(KioskDoctor, pc.handlerGetDoctorKiosk)
+
+	// ----- master kiosk
+	pc.v1.Get(KioskMasterFloor, pc.handlerGetMasterFloorKiosk)
+	pc.v1.Get(KioskMasterCategoryInformation, pc.handlerGetMasterCategoryInformationKiosk)
+	pc.v1.Get(KioskMasterCategoryProduct, pc.handlerGetMasterCategoryProductKiosk)
+	pc.v1.Get(KioskMasterSpecialization, pc.handlerGetMasterSpecializationKiosk)
 }

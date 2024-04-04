@@ -31,6 +31,44 @@ func (s *GlobalService) GetFloorPaginated(ctx context.Context, payload *paginati
 	return
 }
 
+func (s *GlobalService) GetFloorPluckByMerchantIdStr(ctx context.Context, merchantIdStr string) (resp []*dto.DefaultPluck, err error) {
+	resp = make([]*dto.DefaultPluck, 0)
+
+	parentSql, args, err := squirrel.
+		Select("l.id, l.name").
+		From("floors as l").
+		LeftJoin("merchants as m ON m.id = l.merchant_id").
+		Where(squirrel.Eq{
+			"m.id_str":     merchantIdStr,
+			"l.deleted_at": nil,
+		}).
+		ToSql()
+
+	if err != nil {
+		return
+	}
+
+	tx, err := s.db.Raw(parentSql, args...).Rows()
+
+	if err != nil {
+		return
+	}
+
+	for tx.Next() {
+		tmp := dto.DefaultPluck{}
+		err = tx.Scan(&tmp.ID, &tmp.Name)
+		if err != nil {
+			return
+		}
+		resp = append(resp, &dto.DefaultPluck{
+			ID:   tmp.ID,
+			Name: tmp.Name,
+		})
+	}
+
+	return
+}
+
 func (s *GlobalService) GetFloorPluck(ctx context.Context) (resp []*dto.DefaultPluck, err error) {
 	resp = make([]*dto.DefaultPluck, 0)
 

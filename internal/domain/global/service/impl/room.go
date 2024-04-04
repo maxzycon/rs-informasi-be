@@ -21,12 +21,20 @@ func (s *GlobalService) GetRoomPaginated(ctx context.Context, payload *paginatio
 	list, ok := resp.Items.([]*model.Room)
 	if ok {
 		for _, v := range list {
-			respToDto = append(respToDto, &dto.RoomRow{
-				ID:        v.ID,
-				Name:      v.Name,
-				FloorId:   v.FloorID,
-				FloorName: v.Floor.Name,
-			})
+			dto := &dto.RoomRow{
+				ID:          v.ID,
+				Name:        v.Name,
+				FloorId:     v.FloorID,
+				FloorName:   v.Floor.Name,
+				Description: v.Description,
+			}
+
+			if v.Photo != nil {
+				p := s.conf.AWS_S3_URL + "/" + *v.Photo
+				dto.Photo = &p
+			}
+
+			respToDto = append(respToDto, dto)
 		}
 	}
 	resp.Items = respToDto
@@ -78,20 +86,29 @@ func (s *GlobalService) GetRoomById(ctx context.Context, id int) (resp *dto.Room
 		return
 	}
 	resp = &dto.RoomRow{
-		ID:        row.ID,
-		Name:      row.Name,
-		FloorId:   row.Floor.ID,
-		FloorName: row.Floor.Name,
+		ID:          row.ID,
+		Name:        row.Name,
+		FloorId:     row.Floor.ID,
+		FloorName:   row.Floor.Name,
+		Description: row.Description,
 	}
+
+	if row.Photo != nil {
+		p := s.conf.AWS_S3_URL + "/" + *row.Photo
+		resp.Photo = &p
+	}
+
 	return
 }
 
 func (s *GlobalService) CreateRoom(ctx context.Context, payload *dto.PayloadRoom) (resp *int64, err error) {
 	user, _ := authutil.GetCredential(ctx)
 	resp, err = s.globalRepository.CreateRoom(ctx, &model.Room{
-		Name:       payload.Name,
-		MerchantID: *user.MerchantID,
-		FloorID:    payload.FloorId,
+		Name:        payload.Name,
+		MerchantID:  *user.MerchantID,
+		FloorID:     payload.FloorId,
+		Description: payload.Description,
+		Photo:       payload.Photo,
 	})
 	if err != nil {
 		s.log.Errorf("err Room status")
@@ -101,10 +118,24 @@ func (s *GlobalService) CreateRoom(ctx context.Context, payload *dto.PayloadRoom
 }
 
 func (s *GlobalService) UpdateRoomById(ctx context.Context, id int, payload *dto.PayloadRoom) (resp *int64, err error) {
-	resp, err = s.globalRepository.UpdateRoomById(ctx, id, &model.Room{
-		Name:    payload.Name,
-		FloorID: payload.FloorId,
-	})
+	row, err := s.GetRoomById(ctx, id)
+	if err != nil {
+		s.log.Errorf("err update Information %d", id)
+		return
+	}
+
+	entity := &model.Room{
+		Name:        payload.Name,
+		FloorID:     payload.FloorId,
+		Description: payload.Description,
+	}
+
+	if payload.Photo != nil && row.Photo != payload.Photo {
+		entity.Photo = payload.Photo
+	}
+
+	resp, err = s.globalRepository.UpdateRoomById(ctx, id, entity)
+
 	if err != nil {
 		s.log.Errorf("err update Room %d", id)
 		return

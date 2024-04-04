@@ -120,9 +120,9 @@ type Product struct {
 	ProductCategoryID uint
 	ProductCategory   ProductCategory
 
-	Price             float64 `gorm:"not null"`
-	IsDiscount        bool    `gorm:"not null;default:0"`
-	AmountDiscount    *float64
+	Price             float64  `gorm:"not null"`
+	IsDiscount        bool     `gorm:"not null;default:0"`
+	AmountDiscount    *float64 `gorm:"default:0"`
 	DiscountStartDate *datatypes.Date
 	DiscountEndDate   *datatypes.Date
 
@@ -228,9 +228,11 @@ type LogsPage struct {
 
 type Room struct {
 	Model
-	Name    string `gorm:"not null"`
-	FloorID uint   `gorm:"not null"`
-	Floor   Floor
+	Name        string `gorm:"not null"`
+	Description string `gorm:"not null"`
+	Photo       *string
+	FloorID     uint `gorm:"not null"`
+	Floor       Floor
 
 	MerchantID uint `gorm:"not null"`
 	Merchant   Merchant

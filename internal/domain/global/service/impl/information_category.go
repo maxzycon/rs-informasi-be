@@ -3,6 +3,7 @@ package impl
 import (
 	"context"
 
+	"github.com/Masterminds/squirrel"
 	"github.com/maxzycon/rs-informasi-be/internal/domain/global/dto"
 	"github.com/maxzycon/rs-informasi-be/pkg/authutil"
 	"github.com/maxzycon/rs-informasi-be/pkg/model"
@@ -27,6 +28,44 @@ func (s *GlobalService) GetInformationCategoryPaginated(ctx context.Context, pay
 		}
 	}
 	resp.Items = respToDto
+	return
+}
+
+func (s *GlobalService) GetInformationCategoryPluckByMerchantStrId(ctx context.Context, merchantStrID string) (resp []*dto.DefaultPluck, err error) {
+	resp = make([]*dto.DefaultPluck, 0)
+
+	parentSql, args, err := squirrel.
+		Select("l.id, l.name").
+		From("information_categories as l").
+		LeftJoin("merchants as m ON m.id = l.merchant_id").
+		Where(squirrel.Eq{
+			"m.id_str":     merchantStrID,
+			"l.deleted_at": nil,
+		}).
+		ToSql()
+
+	if err != nil {
+		return
+	}
+
+	tx, err := s.db.Raw(parentSql, args...).Rows()
+
+	if err != nil {
+		return
+	}
+
+	for tx.Next() {
+		tmp := dto.DefaultPluck{}
+		err = tx.Scan(&tmp.ID, &tmp.Name)
+		if err != nil {
+			return
+		}
+		resp = append(resp, &dto.DefaultPluck{
+			ID:   tmp.ID,
+			Name: tmp.Name,
+		})
+	}
+
 	return
 }
 

@@ -139,6 +139,38 @@ type GlobalService interface {
 	// ----- Analytic
 	GetDashboardAnalytic(ctx context.Context) (resp *dto.SummaryDashboardWrapper, err error)
 
+	// ----- Kiosk
+	GetDashboardKiosk(ctx context.Context, merchantIdStr string) (resp *dto.WrapperDashboardKiosk, err error)
+
+	// ------- Information
+	GetInformationListKiosk(ctx context.Context, categoryId int, merchantUUID string) (resp []*dto.InformationKioskList, err error)
+	GetInformationKiosk(ctx context.Context, id string, merchantUUID string) (resp *dto.InformationKiosk, err error)
+
+	// ------- Facilities
+	GetFacilitiesListKiosk(ctx context.Context, merchantUUID string) (resp []*dto.FacilitiesListKiosk, err error)
+	GetFacilitieskioskById(ctx context.Context, id string, merchantUUID string) (resp *dto.FacilitiesKiosk, err error)
+
+	// ------ Rooms
+	GetRoomsListKiosk(ctx context.Context, floorId int, merchantUUID string) (resp []*dto.RoomsListKiosk, err error)
+	GetRoomskioskById(ctx context.Context, id string, merchantUUID string) (resp *dto.RoomsKiosk, err error)
+
+	// ------ Services
+	GetServicesListKiosk(ctx context.Context, merchantUUID string) (resp []*dto.ServicesListKiosk, err error)
+	GetServicekioskById(ctx context.Context, id string, merchantUUID string) (resp *dto.ServiceKiosk, err error)
+
+	// ------ Products
+	GetProductsListKiosk(ctx context.Context, categoryId int, merchantUUID string) (resp []*dto.ProductListKiosk, err error)
+
+	// ------ Doctor
+	GetDoctorsListKiosk(ctx context.Context, specializationId int, day int, merchantUUID string) (resp []*dto.DoctorListKiosk, err error)
+	GetDoctorsKiosk(ctx context.Context, id string, merchantUUID string) (resp *dto.DoctorKiosk, err error)
+
+	// ------ Master data
+	GetFloorPluckByMerchantIdStr(ctx context.Context, merchantIdStr string) (resp []*dto.DefaultPluck, err error)
+	GetMerchantSpecializationByMerchantStrIdPluck(ctx context.Context, merchantStrID string) (resp []*dto.DefaultPluck, err error)
+	GetProductCategoryPluckByMerchantStrId(ctx context.Context, merchantStrID string) (resp []*dto.DefaultPluck, err error)
+	GetInformationCategoryPluckByMerchantStrId(ctx context.Context, merchantStrID string) (resp []*dto.DefaultPluck, err error)
+
 	// ----- Dashboard queue
 	GetMerchantDetailAdvertisement(ctx context.Context, merchantIdStr string) (resp *dto.AdvertisementMerchant, err error)
 }
