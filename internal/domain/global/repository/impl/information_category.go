@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/maxzycon/rs-informasi-be/pkg/authutil"
+	"github.com/maxzycon/rs-informasi-be/pkg/constant/role"
 	"github.com/maxzycon/rs-informasi-be/pkg/model"
 	"github.com/maxzycon/rs-informasi-be/pkg/util/pagination"
 )
@@ -21,10 +23,19 @@ func (r *GlobalRepository) FindAllInformationCategory(ctx context.Context) (resp
 
 func (r *GlobalRepository) FindInformationCategoryPaginated(ctx context.Context, payload *pagination.DefaultPaginationPayload) (resp pagination.DefaultPagination, err error) {
 	var InformationCategorys []*model.InformationCategory = make([]*model.InformationCategory, 0)
+	user, err := authutil.GetCredential(ctx)
+
+	if err != nil {
+		return
+	}
+
 	sql := r.db.Debug().WithContext(ctx)
 	if payload.Search != nil && *payload.Search != "" {
 		search := fmt.Sprintf("%%%s%%", *payload.Search)
 		sql = sql.Where("name LIKE ?", search)
+	}
+	if user.Role == uint(role.ROLE_ADMIN) {
+		sql = sql.Where("merchant_id = ?", user.MerchantID)
 	}
 	sql.Scopes(payload.Pagination(&InformationCategorys, &resp.Paginator, sql)).Find(&InformationCategorys)
 	resp.Items = InformationCategorys

@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/maxzycon/rs-informasi-be/pkg/authutil"
+	"github.com/maxzycon/rs-informasi-be/pkg/constant/role"
 	"github.com/maxzycon/rs-informasi-be/pkg/model"
 	"github.com/maxzycon/rs-informasi-be/pkg/util/pagination"
 )
@@ -21,11 +23,21 @@ func (r *GlobalRepository) FindAllMerchantSpecialization(ctx context.Context) (r
 
 func (r *GlobalRepository) FindMerchantSpecializationPaginated(ctx context.Context, payload *pagination.DefaultPaginationPayload) (resp pagination.DefaultPagination, err error) {
 	var MerchantSpecializations []*model.Specialization = make([]*model.Specialization, 0)
+	user, err := authutil.GetCredential(ctx)
+
+	if err != nil {
+		return
+	}
 	sql := r.db.Debug().WithContext(ctx).Preload("Organ")
 	if payload.Search != nil && *payload.Search != "" {
 		search := fmt.Sprintf("%%%s%%", *payload.Search)
 		sql = sql.Where("name LIKE ?", search)
 	}
+
+	if user.Role == uint(role.ROLE_ADMIN) {
+		sql = sql.Where("merchant_id = ?", user.MerchantID)
+	}
+
 	sql.Scopes(payload.Pagination(&MerchantSpecializations, &resp.Paginator, sql)).Find(&MerchantSpecializations)
 	resp.Items = MerchantSpecializations
 	return

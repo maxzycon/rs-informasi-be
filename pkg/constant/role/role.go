@@ -7,4 +7,5 @@ var (
 	ROLE_FARMASI     uint = 4
 	ROLE_MARKETING   uint = 5 // ----- same like owner
 	ROLE_KASIR       uint = 6
+	ROLE_ADMIN            = 2
 )

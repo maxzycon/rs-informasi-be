@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/maxzycon/rs-informasi-be/pkg/authutil"
+	"github.com/maxzycon/rs-informasi-be/pkg/constant/role"
 	"github.com/maxzycon/rs-informasi-be/pkg/model"
 	"github.com/maxzycon/rs-informasi-be/pkg/util/pagination"
 )
@@ -21,11 +23,23 @@ func (r *GlobalRepository) FindAllDoctor(ctx context.Context) (resp []*model.Doc
 
 func (r *GlobalRepository) FindDoctorPaginated(ctx context.Context, payload *pagination.DefaultPaginationPayload) (resp pagination.DefaultPagination, err error) {
 	var Doctors []*model.Doctor = make([]*model.Doctor, 0)
+
+	user, err := authutil.GetCredential(ctx)
+
+	if err != nil {
+		return
+	}
+
 	sql := r.db.Debug().WithContext(ctx).Preload("Specialization")
 	if payload.Search != nil && *payload.Search != "" {
 		search := fmt.Sprintf("%%%s%%", *payload.Search)
 		sql = sql.Where("name LIKE ?", search)
 	}
+
+	if user.Role == uint(role.ROLE_ADMIN) {
+		sql = sql.Where("merchant_id = ?", user.MerchantID)
+	}
+
 	sql.Scopes(payload.Pagination(&Doctors, &resp.Paginator, sql)).Find(&Doctors)
 	resp.Items = Doctors
 	return
