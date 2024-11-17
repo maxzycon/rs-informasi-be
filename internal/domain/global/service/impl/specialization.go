@@ -22,10 +22,10 @@ func (s *GlobalService) GetMerchantSpecializationPaginated(ctx context.Context, 
 	if ok {
 		for _, v := range list {
 			respToDto = append(respToDto, &dto.MerchantSpecializationRow{
-				ID:        v.ID,
-				Name:      v.Name,
-				OrganID:   v.OrganID,
-				OrganName: v.Organ.Name,
+				ID:   v.ID,
+				Name: v.Name,
+				// OrganID:   v.OrganID,
+				// OrganName: v.Organ.Name,
 			})
 		}
 	}
@@ -94,10 +94,10 @@ func (s *GlobalService) GetMerchantSpecializationById(ctx context.Context, id in
 		return
 	}
 	resp = &dto.MerchantSpecializationRow{
-		ID:        row.ID,
-		Name:      row.Name,
-		OrganID:   row.OrganID,
-		OrganName: row.Organ.Name,
+		ID:   row.ID,
+		Name: row.Name,
+		// OrganID:   row.OrganID,
+		// OrganName: row.Organ.Name,
 	}
 	return
 }
@@ -107,7 +107,7 @@ func (s *GlobalService) CreateMerchantSpecialization(ctx context.Context, payloa
 	resp, err = s.globalRepository.CreateMerchantSpecialization(ctx, &model.Specialization{
 		Name:       payload.Name,
 		MerchantID: *user.MerchantID,
-		OrganID:    payload.OrganID,
+		// OrganID:    payload.OrganID,
 	})
 	if err != nil {
 		s.log.Error("err MerchantSpecialization status")
@@ -118,8 +118,8 @@ func (s *GlobalService) CreateMerchantSpecialization(ctx context.Context, payloa
 
 func (s *GlobalService) UpdateMerchantSpecializationById(ctx context.Context, id int, payload *dto.PayloadMerchantSpecialization) (resp *int64, err error) {
 	resp, err = s.globalRepository.UpdateMerchantSpecializationById(ctx, id, &model.Specialization{
-		Name:    payload.Name,
-		OrganID: payload.OrganID,
+		Name: payload.Name,
+		// OrganID: payload.OrganID,
 	})
 	if err != nil {
 		s.log.Errorf("err update MerchantSpecialization %d", id)

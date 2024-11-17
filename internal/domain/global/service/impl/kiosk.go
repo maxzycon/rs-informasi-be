@@ -500,7 +500,7 @@ func (s *GlobalService) GetDoctorsListKiosk(ctx context.Context, specializationI
 		Select("i.id_str, i.name, i.photo, pc.name, og.name").
 		From("doctors as i").
 		LeftJoin("specializations as pc ON pc.id = i.specialization_id").
-		LeftJoin("organs as og ON og.id = pc.organ_id").
+		// LeftJoin("organs as og ON og.id = pc.organ_id").
 		LeftJoin("merchants as m ON m.id = i.merchant_id")
 
 	if day > 0 {
@@ -526,7 +526,7 @@ func (s *GlobalService) GetDoctorsListKiosk(ctx context.Context, specializationI
 
 	for rows.Next() {
 		temp := dto.DoctorListKiosk{}
-		err = rows.Scan(&temp.ID, &temp.Name, &temp.Photo, &temp.SpecializationName, &temp.OrganName)
+		err = rows.Scan(&temp.ID, &temp.Name, &temp.Photo, &temp.SpecializationName)
 		if err != nil {
 			s.log.Errorf("err scan service : %v", err)
 			return
@@ -603,7 +603,7 @@ func (s *GlobalService) GetDoctorsKiosk(ctx context.Context, id string, merchant
 		Select("i.id_str, i.name, i.photo, pc.name, og.name").
 		From("doctors as i").
 		LeftJoin("specializations as pc ON pc.id = i.specialization_id").
-		LeftJoin("organs as og ON og.id = pc.organ_id").
+		// LeftJoin("organs as og ON og.id = pc.organ_id").
 		LeftJoin("merchants as m ON m.id = i.merchant_id").
 		Where(cond).ToSql()
 
@@ -619,7 +619,7 @@ func (s *GlobalService) GetDoctorsKiosk(ctx context.Context, id string, merchant
 	}
 
 	temp := dto.DoctorKiosk{}
-	err = row.Scan(&temp.ID, &temp.Name, &temp.Photo, &temp.SpecializationName, &temp.OrganName)
+	err = row.Scan(&temp.ID, &temp.Name, &temp.Photo, &temp.SpecializationName)
 	if err != nil {
 		s.log.Errorf("err scan service : %v", err)
 		return
@@ -748,7 +748,7 @@ func (s *GlobalService) GetDashboardKiosk(ctx context.Context, merchantIdStr str
 		Select("i.id_str, i.name, i.photo, pc.name, og.name").
 		From("doctors as i").
 		LeftJoin("specializations as pc ON pc.id = i.specialization_id").
-		LeftJoin("organs as og ON og.id = pc.organ_id").
+		// LeftJoin("organs as og ON og.id = pc.organ_id").
 		LeftJoin("merchants as m ON m.id = i.merchant_id").
 		Where(cond).
 		OrderBy("RAND()").
@@ -770,7 +770,7 @@ func (s *GlobalService) GetDashboardKiosk(ctx context.Context, merchantIdStr str
 
 	for rows.Next() {
 		temp := dto.DoctorDashboarKiosk{}
-		err = rows.Scan(&temp.ID, &temp.Name, &temp.Photo, &temp.SpecializationName, &temp.OrganName)
+		err = rows.Scan(&temp.ID, &temp.Name, &temp.Photo, &temp.SpecializationName)
 		if err != nil {
 			s.log.Errorf("err scan service : %v", err)
 			return

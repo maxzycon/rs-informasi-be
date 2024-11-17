@@ -190,8 +190,8 @@ type Specialization struct {
 	Model
 	Name string `gorm:"not null"`
 
-	OrganID uint `gorm:"not null"`
-	Organ   Organ
+	// OrganID uint `gorm:"not null"`
+	// Organ   Organ
 
 	MerchantID uint `gorm:"not null"`
 	Merchant   Merchant

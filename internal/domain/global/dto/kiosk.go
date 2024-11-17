@@ -81,19 +81,19 @@ type TempProductListDetailKiosk struct {
 }
 
 type DoctorListKiosk struct {
-	ID                  string                 `json:"id"`
-	Name                string                 `json:"name"`
-	SpecializationName  string                 `json:"specialization_name"`
-	OrganName           string                 `json:"organ_name"`
+	ID                 string `json:"id"`
+	Name               string `json:"name"`
+	SpecializationName string `json:"specialization_name"`
+	// OrganName           string                 `json:"organ_name"`
 	Photo               *string                `json:"photo"`
 	DoctorScheduleKiosk []*DoctorScheduleKiosk `json:"slot_detail"`
 }
 
 type DoctorKiosk struct {
-	ID                   string                  `json:"id"`
-	Name                 string                  `json:"name"`
-	SpecializationName   string                  `json:"specialization_name"`
-	OrganName            string                  `json:"organ_name"`
+	ID                 string `json:"id"`
+	Name               string `json:"name"`
+	SpecializationName string `json:"specialization_name"`
+	// OrganName            string                  `json:"organ_name"`
 	Photo                *string                 `json:"photo"`
 	DoctorScheduleKiosk  []*DoctorScheduleKiosk  `json:"slot_detail"`
 	DoctorSkillKiosk     []*DoctorSkillKiosk     `json:"skill_detail"`
@@ -128,11 +128,11 @@ type TempDoctorScheduleKiosk struct {
 }
 
 type DoctorDashboarKiosk struct {
-	ID                 string  `json:"id"`
-	Name               string  `json:"name"`
-	SpecializationName string  `json:"specialization_name"`
-	OrganName          string  `json:"organ_name"`
-	Photo              *string `json:"photo"`
+	ID                 string `json:"id"`
+	Name               string `json:"name"`
+	SpecializationName string `json:"specialization_name"`
+	// OrganName          string  `json:"organ_name"`
+	Photo *string `json:"photo"`
 }
 
 type ProductDashboardKiosk struct {
