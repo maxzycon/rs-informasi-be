@@ -17,6 +17,6 @@ services:
       - traefik.http.routers.informasibe.tls.certresolver=myresolver
       - traefik.http.middlewares.informasibe-redirectscheme.redirectscheme.scheme=https
       - traefik.http.middlewares.informasibe-redirectscheme.redirectscheme.permanent=true
-  networks:
-    traefik:
-      external: true
+networks:
+  traefik:
+    external: true
