@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/maxzycon/rs-informasi-be/pkg/authutil"
+	"github.com/maxzycon/rs-informasi-be/pkg/constant/role"
 	"github.com/maxzycon/rs-informasi-be/pkg/model"
 	"github.com/maxzycon/rs-informasi-be/pkg/util/pagination"
 )
@@ -14,8 +16,19 @@ func (r *GlobalRepository) FindAdvertisementById(ctx context.Context, id int) (r
 }
 
 func (r *GlobalRepository) FindAllAdvertisement(ctx context.Context) (resp []*model.Advertisement, err error) {
+	user, err := authutil.GetCredential(ctx)
+	if err != nil {
+		return
+	}
+
 	resp = make([]*model.Advertisement, 0)
-	tx := r.db.WithContext(ctx).Model(&model.Advertisement{}).Find(&resp)
+	sql := r.db.WithContext(ctx).Model(&model.Advertisement{})
+
+	if user.Role == uint(role.ROLE_ADMIN) {
+		sql = sql.Where("merchant_id = ?", user.MerchantID)
+	}
+
+	tx := sql.Find(&resp)
 	return resp, tx.Error
 }
 

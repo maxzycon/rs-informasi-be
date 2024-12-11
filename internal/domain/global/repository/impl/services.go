@@ -16,8 +16,20 @@ func (r *GlobalRepository) FindServicesById(ctx context.Context, id int) (resp *
 }
 
 func (r *GlobalRepository) FindAllServices(ctx context.Context) (resp []*model.Services, err error) {
+	user, err := authutil.GetCredential(ctx)
+
+	if err != nil {
+		return
+	}
+
 	resp = make([]*model.Services, 0)
-	tx := r.db.WithContext(ctx).Model(&model.Services{}).Find(&resp)
+	sql := r.db.WithContext(ctx).Model(&model.Services{})
+
+	if user.Role == uint(role.ROLE_ADMIN) {
+		sql = sql.Where("merchant_id = ?", user.MerchantID)
+	}
+
+	tx := sql.Find(&resp)
 	return resp, tx.Error
 }
 

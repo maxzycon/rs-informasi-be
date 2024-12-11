@@ -16,8 +16,19 @@ func (r *GlobalRepository) FindFacilityById(ctx context.Context, id int) (resp *
 }
 
 func (r *GlobalRepository) FindAllFacility(ctx context.Context) (resp []*model.Facility, err error) {
+	user, err := authutil.GetCredential(ctx)
+	if err != nil {
+		return
+	}
+
 	resp = make([]*model.Facility, 0)
-	tx := r.db.WithContext(ctx).Model(&model.Facility{}).Find(&resp)
+	sql := r.db.WithContext(ctx).Model(&model.Facility{})
+
+	if user.Role == uint(role.ROLE_ADMIN) {
+		sql = sql.Where("merchant_id = ?", user.MerchantID)
+	}
+
+	tx := sql.Find(&resp)
 	return resp, tx.Error
 }
 

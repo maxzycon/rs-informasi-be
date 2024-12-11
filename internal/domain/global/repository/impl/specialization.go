@@ -16,8 +16,20 @@ func (r *GlobalRepository) FindMerchantSpecializationById(ctx context.Context, i
 }
 
 func (r *GlobalRepository) FindAllMerchantSpecialization(ctx context.Context) (resp []*model.Specialization, err error) {
+	user, err := authutil.GetCredential(ctx)
+	if err != nil {
+		return
+	}
+
 	resp = make([]*model.Specialization, 0)
-	tx := r.db.WithContext(ctx).Model(&model.Specialization{}).Find(&resp)
+
+	sql := r.db.WithContext(ctx).Model(&model.Specialization{})
+
+	if user.Role == uint(role.ROLE_ADMIN) {
+		sql = sql.Where("merchant_id = ?", user.MerchantID)
+	}
+
+	tx := sql.Find(&resp)
 	return resp, tx.Error
 }
 

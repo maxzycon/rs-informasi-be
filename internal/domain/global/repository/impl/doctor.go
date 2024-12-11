@@ -16,8 +16,19 @@ func (r *GlobalRepository) FindDoctorById(ctx context.Context, id int) (resp *mo
 }
 
 func (r *GlobalRepository) FindAllDoctor(ctx context.Context) (resp []*model.Doctor, err error) {
+	user, err := authutil.GetCredential(ctx)
+	if err != nil {
+		return
+	}
+
 	resp = make([]*model.Doctor, 0)
-	tx := r.db.WithContext(ctx).Model(&model.Doctor{}).Find(&resp)
+	sql := r.db.WithContext(ctx).Model(&model.Doctor{})
+
+	if user.Role == uint(role.ROLE_ADMIN) {
+		sql = sql.Where("merchant_id = ?", user.MerchantID)
+	}
+
+	tx := sql.Find(&resp)
 	return resp, tx.Error
 }
 

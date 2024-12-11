@@ -16,8 +16,19 @@ func (r *GlobalRepository) FindRoomById(ctx context.Context, id int) (resp *mode
 }
 
 func (r *GlobalRepository) FindAllRoom(ctx context.Context) (resp []*model.Room, err error) {
+	user, err := authutil.GetCredential(ctx)
+
+	if err != nil {
+		return
+	}
 	resp = make([]*model.Room, 0)
-	tx := r.db.WithContext(ctx).Model(&model.Room{}).Find(&resp)
+	sql := r.db.WithContext(ctx).Model(&model.Room{})
+
+	if user.Role == uint(role.ROLE_ADMIN) {
+		sql = sql.Where("merchant_id = ?", user.MerchantID)
+	}
+
+	tx := sql.Find(&resp)
 	return resp, tx.Error
 }
 

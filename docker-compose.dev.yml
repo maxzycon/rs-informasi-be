@@ -5,5 +5,18 @@ services:
     build: .
     image: maxzycon/go-rs-information:be-dev-latest
     restart: unless-stopped
-    ports:
-      - "8085:8082"
+    # ports:
+    #   - "8085:8082"
+    networks:
+      - traefik
+    labels:
+      - traefik.enable=true
+      - "traefik.http.routers.informasibe.entryPoints=web,websecure"
+      - traefik.http.routers.informasibe.rule=Host(`api.kioskinfo.dgnius.com`)
+      - traefik.http.routers.informasibe.tls=true
+      - traefik.http.routers.informasibe.tls.certresolver=myresolver
+      - traefik.http.middlewares.informasibe-redirectscheme.redirectscheme.scheme=https
+      - traefik.http.middlewares.informasibe-redirectscheme.redirectscheme.permanent=true
+  networks:
+    traefik:
+      external: true

@@ -497,7 +497,7 @@ func (s *GlobalService) GetDoctorsListKiosk(ctx context.Context, specializationI
 	doctorIds := []string{}
 
 	p := squirrel.
-		Select("i.id_str, i.name, i.photo, pc.name, og.name").
+		Select("i.id_str, i.name, i.photo, pc.name").
 		From("doctors as i").
 		LeftJoin("specializations as pc ON pc.id = i.specialization_id").
 		// LeftJoin("organs as og ON og.id = pc.organ_id").
@@ -600,7 +600,7 @@ func (s *GlobalService) GetDoctorsKiosk(ctx context.Context, id string, merchant
 	}
 
 	rootSql, argsRoot, err := squirrel.
-		Select("i.id_str, i.name, i.photo, pc.name, og.name").
+		Select("i.id_str, i.name, i.photo, pc.name").
 		From("doctors as i").
 		LeftJoin("specializations as pc ON pc.id = i.specialization_id").
 		// LeftJoin("organs as og ON og.id = pc.organ_id").
@@ -745,7 +745,7 @@ func (s *GlobalService) GetDashboardKiosk(ctx context.Context, merchantIdStr str
 	}
 
 	rootSql, argsRoot, err := squirrel.
-		Select("i.id_str, i.name, i.photo, pc.name, og.name").
+		Select("i.id_str, i.name, i.photo, pc.name").
 		From("doctors as i").
 		LeftJoin("specializations as pc ON pc.id = i.specialization_id").
 		// LeftJoin("organs as og ON og.id = pc.organ_id").

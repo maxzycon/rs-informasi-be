@@ -102,8 +102,8 @@ func (s *GlobalService) UpdateServiceById(ctx context.Context, id int, payload *
 		Photo: payload.Photo,
 	}
 
-	if payload.Photo != nil && row.Photo != payload.Photo {
-		entity.Photo = row.Photo
+	if payload.Photo != nil && *row.Photo != *payload.Photo {
+		entity.Photo = payload.Photo
 	}
 
 	resp, err = s.globalRepository.UpdateServicesById(ctx, id, entity)

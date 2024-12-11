@@ -101,7 +101,7 @@ func (s *GlobalService) UpdateFacilityById(ctx context.Context, id int, payload 
 		return
 	}
 
-	if payload.Photo != nil && row.Photo != payload.Photo {
+	if payload.Photo != nil && *row.Photo != *payload.Photo {
 		entity.Photo = payload.Photo
 	}
 

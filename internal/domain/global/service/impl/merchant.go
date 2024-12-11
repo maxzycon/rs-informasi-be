@@ -205,7 +205,7 @@ func (s *GlobalService) UpdateMerchantById(ctx context.Context, id int, payload 
 		MerchantCategoryID: payload.MerchantCategoryID,
 	}
 
-	if payload.Photo != nil && row.Photo != payload.Photo {
+	if payload.Photo != nil && *row.Photo != *payload.Photo {
 		entity.Photo = payload.Photo
 	}
 

@@ -103,6 +103,7 @@ func (s *GlobalService) CreateDoctor(ctx context.Context, payload *dto.PayloadDo
 		Name:             payload.Name,
 		SpecializationID: payload.SpecializationID,
 		MerchantID:       *user.MerchantID,
+		Photo:            payload.Photo,
 	}
 
 	for _, v := range payload.Educations {
@@ -147,7 +148,7 @@ func (s *GlobalService) UpdateDoctorById(ctx context.Context, id int, payload *d
 		SpecializationID: payload.SpecializationID,
 	}
 
-	if payload.Photo != nil && row.Photo != payload.Photo {
+	if payload.Photo != nil && *row.Photo != *payload.Photo {
 		entity.Photo = payload.Photo
 	}
 

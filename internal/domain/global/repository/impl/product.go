@@ -16,8 +16,19 @@ func (r *GlobalRepository) FindProductById(ctx context.Context, id int) (resp *m
 }
 
 func (r *GlobalRepository) FindAllProduct(ctx context.Context) (resp []*model.Product, err error) {
+	user, err := authutil.GetCredential(ctx)
+	if err != nil {
+		return
+	}
+
 	resp = make([]*model.Product, 0)
-	tx := r.db.WithContext(ctx).Model(&model.Product{}).Find(&resp)
+	sql := r.db.WithContext(ctx).Model(&model.Product{})
+
+	if user.Role == uint(role.ROLE_ADMIN) {
+		sql = sql.Where("merchant_id = ?", user.MerchantID)
+	}
+
+	tx := sql.Find(&resp)
 	return resp, tx.Error
 }
 

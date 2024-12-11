@@ -16,8 +16,19 @@ func (r *GlobalRepository) FindInformationCategoryById(ctx context.Context, id i
 }
 
 func (r *GlobalRepository) FindAllInformationCategory(ctx context.Context) (resp []*model.InformationCategory, err error) {
+	user, err := authutil.GetCredential(ctx)
+	if err != nil {
+		return
+	}
+
 	resp = make([]*model.InformationCategory, 0)
-	tx := r.db.WithContext(ctx).Model(&model.InformationCategory{}).Find(&resp)
+	sql := r.db.WithContext(ctx).Model(&model.InformationCategory{})
+
+	if user.Role == uint(role.ROLE_ADMIN) {
+		sql = sql.Where("merchant_id = ?", user.MerchantID)
+	}
+
+	tx := sql.Find(&resp)
 	return resp, tx.Error
 }
 

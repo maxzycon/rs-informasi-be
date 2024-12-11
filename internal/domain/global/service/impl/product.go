@@ -161,7 +161,7 @@ func (s *GlobalService) UpdateProductById(ctx context.Context, id int, payload *
 		AmountDiscount:    payload.AmountDiscount,
 	}
 
-	if payload.Photo != nil && row.Photo != payload.Photo {
+	if payload.Photo != nil && *row.Photo != *payload.Photo {
 		entity.Photo = payload.Photo
 	}
 

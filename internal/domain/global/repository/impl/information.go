@@ -16,8 +16,19 @@ func (r *GlobalRepository) FindInformationById(ctx context.Context, id int) (res
 }
 
 func (r *GlobalRepository) FindAllInformation(ctx context.Context) (resp []*model.Information, err error) {
+	user, err := authutil.GetCredential(ctx)
+	if err != nil {
+		return
+	}
+
 	resp = make([]*model.Information, 0)
-	tx := r.db.WithContext(ctx).Model(&model.Information{}).Find(&resp)
+	sql := r.db.WithContext(ctx).Model(&model.Information{})
+
+	if user.Role == uint(role.ROLE_ADMIN) {
+		sql = sql.Where("merchant_id = ?", user.MerchantID)
+	}
+
+	tx := sql.Find(&resp)
 	return resp, tx.Error
 }
 

@@ -105,7 +105,7 @@ func (s *GlobalService) UpdateInformationById(ctx context.Context, id int, paylo
 		InformationCategoryID: payload.InformationCategoryID,
 	}
 
-	if payload.Photo != nil && row.Photo != payload.Photo {
+	if payload.Photo != nil && *row.Photo != *payload.Photo {
 		entity.Photo = payload.Photo
 	}
 
