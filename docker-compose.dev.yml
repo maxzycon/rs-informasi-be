@@ -4,6 +4,7 @@ services:
   backend:
     build: .
     image: maxzycon/go-rs-information:be-dev-latest
+    container_name: farmasi_information_be
     restart: unless-stopped
     # ports:
     #   - "8085:8082"
